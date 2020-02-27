@@ -22,8 +22,11 @@ import LightBootstrap from './light-bootstrap-main'
 
 // router setup
 import routes from './routes/routes'
-
+import { store } from "./store/store";
 import './registerServiceWorker'
+import io from "socket.io-client";
+
+Vue.prototype.$socket = io("172.30.1.30:3000");
 // plugin setup
 Vue.use(VueRouter)
 Vue.use(LightBootstrap)
@@ -45,5 +48,6 @@ const router = new VueRouter({
 new Vue({
   el: '#app',
   render: h => h(App),
-  router
+  router,
+  store
 })

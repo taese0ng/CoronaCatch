@@ -6,8 +6,15 @@
 </template>
 
 <script>
-  export default {}
+export default {
+  created(){
+    this.$socket.on("coronaData",data=>{
+      console.log(data)
+    })
+  }
+}
 </script>
+
 <style lang="scss">
   .vue-notifyjs.notifications{
     .list-move {

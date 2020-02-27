@@ -1,35 +1,65 @@
 const axios = require("axios");
 const cheeiro = require("cheerio");
 const log = console.log;
+const express = require("express");
+const app = express();
+const server = app.listen(3000, function() {
+  console.log("Listening on port *: 3000");
+});
+const request = require("request");
 
-const getHtml = async () =>{
-    try{
-        return  await axios.get("http://ncov.mohw.go.kr/bdBoardList_Real.do?brdId=&brdGubun=&ncvContSeq=&contSeq=&board_id=&gubun=")
-    }
-    catch(err){
-        console.error(err);
-    }
+const schedule = require("node-schedule");
+var num = 0;
+
+const io = require("socket.io")(server);
+
+app.use(express.static("dist"));
+
+const getHtml = async () => {
+  try {
+    return await axios.get(
+      "http://ncov.mohw.go.kr/bdBoardList_Real.do?brdId=&brdGubun=&ncvContSeq=&contSeq=&board_id=&gubun="
+    );
+  } catch (err) {
+    console.error(err);
+  }
 };
 
-getHtml()
+const j = schedule.scheduleJob("1 * * * * *", function() {
+  getHtml()
     .then(html => {
-        let ulList = []
-        const $ = cheeiro.load(html.data);
-        const $bodyList = $("div.bvc_txt ul.s_listin_dot").children('li')
+      let ulList = [];
+      const $ = cheeiro.load(html.data);
+      const $bodyList = $("div.data_table table.num tbody").children("tr");
 
-        // 0: 확진환자 1: 확진환자 격리해제 2: 사망자 3: 검사진행
-        $bodyList.each(function(i,elem){
-            let txt = $(this).text();
-            let title = txt.slice(1,txt.indexOf(')'));
-            let data = txt.slice(txt.indexOf(')')+1, txt.length)
-       
-            ulList[i] = {
-                title:title,
-                data:data
-            }
-        })
+      // 0: 확진환자 1: 확진환자 격리해제 2: 사망자 3: 검사진행
+      $bodyList.each(function(i, elem) {
+        let title = $(this)
+          .children("th")
+          .text();
+        let data = $(this)
+          .children("td")
+          .text();
 
-        const data = ulList;
-        return data;
+        // let title = txt.slice(1,txt.indexOf(')'));
+        // let data = txt.slice(txt.indexOf(')')+1, txt.length)
+
+        ulList[i] = {
+          title: title,
+          data: data
+        };
+      });
+      // console.log(ulList)
+      const data = ulList;
+      return data;
     })
-    .then(res => log(res))
+    .then(res => {
+      log(res);
+      io.emit("coronaData", res);
+    });
+});
+
+io.on("connection", socket => {
+  console.log(socket.client.id); // Prints client socket id
+  //console.log(socket.id);
+});
