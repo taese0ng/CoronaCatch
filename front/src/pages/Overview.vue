@@ -9,7 +9,7 @@
             </div>
             <div slot="content">
               <p class="card-category">확진자</p>
-              <h4 class="card-title">{{this.getData[0].data}}</h4>
+              <h4 class="card-title">{{this.getData[0].data}} 명</h4>
             </div>
             <div slot="footer">
               <i class="fa fa-clock-o"></i>{{this.getDate}}
@@ -24,7 +24,7 @@
             </div>
             <div slot="content">
               <p class="card-category">사망자</p>
-              <h4 class="card-title">{{this.getData[2].data}}</h4>
+              <h4 class="card-title">{{this.getData[2].data}} 명</h4>
             </div>
             <div slot="footer">
               <i class="fa fa-clock-o"></i>{{this.getDate}}
@@ -35,11 +35,11 @@
         <div class="col-xl-3 col-md-6">
           <stats-card>
             <div slot="header" class="icon-danger">
-              <i class="nc-icon nc-favourite-28 text-success"></i>
+              <i class="nc-icon nc-favourite-28 text-info"></i>
             </div>
             <div slot="content">
               <p class="card-category">확진환자 격리해제</p>
-              <h4 class="card-title">{{this.getData[1].data}}</h4>
+              <h4 class="card-title">{{this.getData[1].data}} 명</h4>
             </div>
             <div slot="footer">
               <i class="fa fa-clock-o"></i>{{this.getDate}}
@@ -50,11 +50,11 @@
         <div class="col-xl-3 col-md-6">
           <stats-card>
             <div slot="header" class="icon-info">
-              <i class="nc-icon nc-zoom-split text-primary"></i>
+              <i class="nc-icon nc-zoom-split text-success"></i>
             </div>
             <div slot="content">
               <p class="card-category">검사진행</p>
-              <h4 class="card-title">{{this.getData[3].data}}</h4>
+              <h4 class="card-title">{{this.getData[3].data}} 명</h4>
             </div>
             <div slot="footer">
               <i class="fa fa-clock-o"></i>{{this.getDate}}
@@ -64,19 +64,19 @@
 
       </div>
       <div class="row">
-        <div class="col-md-8">
-          <chart-card :chart-data="lineChart.data"
-                      :chart-options="lineChart.options"
-                      :responsive-options="lineChart.responsiveOptions">
+        <div class="col-md-12">
+          <chart-card :chart-data="this.getlineChartData.data"
+                      :chart-options="this.getlineChartData.options"
+                      :responsive-options="this.getlineChartData.responsiveOptions">
             <template slot="header">
-              <h4 class="card-title">Users Behavior</h4>
-              <p class="card-category">24 Hours performance</p>
+              <h4 class="card-title">코로나 그래프</h4>
+              <p class="card-category">매일 코로나 환자 비교</p>
             </template>
             <template slot="footer">
               <div class="legend">
-                <i class="fa fa-circle text-info"></i> Open
-                <i class="fa fa-circle text-danger"></i> Click
-                <i class="fa fa-circle text-warning"></i> Click Second Time
+                <i class="fa fa-circle text-info"></i> 격리해제
+                <i class="fa fa-circle text-danger"></i> 사망자
+                <i class="fa fa-circle text-warning"></i> 확진자
               </div>
               <hr>
               <div class="stats">
@@ -85,43 +85,23 @@
             </template>
           </chart-card>
         </div>
-
-        <div class="col-md-4">
-          <chart-card :chart-data="pieChart.data" chart-type="Pie">
-            <template slot="header">
-              <h4 class="card-title">Email Statistics</h4>
-              <p class="card-category">Last Campaign Performance</p>
-            </template>
-            <template slot="footer">
-              <div class="legend">
-                <i class="fa fa-circle text-info"></i> Open
-                <i class="fa fa-circle text-danger"></i> Bounce
-                <i class="fa fa-circle text-warning"></i> Unsubscribe
-              </div>
-              <hr>
-              <div class="stats">
-                <i class="fa fa-clock-o"></i> Campaign sent 2 days ago
-              </div>
-            </template>
-          </chart-card>
-        </div>
       </div>
 
       <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-12">
           <chart-card
             :chart-data="barChart.data"
             :chart-options="barChart.options"
             :chart-responsive-options="barChart.responsiveOptions"
             chart-type="Bar">
             <template slot="header">
-              <h4 class="card-title">2014 Sales</h4>
-              <p class="card-category">All products including Taxes</p>
+              <h4 class="card-title">코로나 글로벌 그래프</h4>
+              <p class="card-category">각 국가의 코로나피해 비교</p>
             </template>
             <template slot="footer">
               <div class="legend">
-                <i class="fa fa-circle text-info"></i> Tesla Model S
-                <i class="fa fa-circle text-danger"></i> BMW 5 Series
+                <i class="fa fa-circle text-info"></i> 확진자
+                <i class="fa fa-circle text-danger"></i> 사망자
               </div>
               <hr>
               <div class="stats">
@@ -130,8 +110,6 @@
             </template>
           </chart-card>
         </div>
-
-        
       </div>
     </div>
   </div>
@@ -149,53 +127,12 @@
       StatsCard
     },
     computed: {
-      ...mapGetters(['getData', 'getDate']),
+      ...mapGetters(['getData', 'getDate','getlineChartData'])
     },
     data () {
       return {
         editTooltip: 'Edit Task',
         deleteTooltip: 'Remove',
-        pieChart: {
-          data: {
-            labels: ['40%', '20%', '40%'],
-            series: [40, 20, 40]
-          }
-        },
-        lineChart: {
-          data: {
-            labels: ['9:00AM', '12:00AM', '3:00PM', '6:00PM', '9:00PM', '12:00PM', '3:00AM', '6:00AM'],
-            series: [
-              [287, 385, 490, 492, 554, 586, 698, 695],
-              [67, 152, 143, 240, 287, 335, 435, 437],
-              [23, 113, 67, 108, 190, 239, 307, 308]
-            ]
-          },
-          options: {
-            low: 0,
-            high: 800,
-            showArea: false,
-            height: '245px',
-            axisX: {
-              showGrid: false
-            },
-            lineSmooth: true,
-            showLine: true,
-            showPoint: true,
-            fullWidth: true,
-            chartPadding: {
-              right: 50
-            }
-          },
-          responsiveOptions: [
-            ['screen and (max-width: 640px)', {
-              axisX: {
-                labelInterpolationFnc (value) {
-                  return value[0]
-                }
-              }
-            }]
-          ]
-        },
         barChart: {
           data: {
             labels: ['Jan', 'Feb', 'Mar', 'Apr', 'Mai', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -222,19 +159,6 @@
             }]
           ]
         },
-        tableData: {
-          data: [
-            {title: 'Sign contract for "What are conference organizers afraid of?"', checked: false},
-            {title: 'Lines From Great Russian Literature? Or E-mails From My Boss?', checked: true},
-            {
-              title: 'Flooded: One year later, assessing what was lost and what was found when a ravaging rain swept through metro Detroit',
-              checked: true
-            },
-            {title: 'Create 4 Invisible User Experiences you Never Knew About', checked: false},
-            {title: 'Read "Following makes Medium better"', checked: false},
-            {title: 'Unfollow 5 enemies from twitter', checked: false}
-          ]
-        }
       }
     }
   }

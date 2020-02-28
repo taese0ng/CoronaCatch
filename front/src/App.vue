@@ -15,11 +15,11 @@ export default {
     })
 
     this.$socket.on("accumulateData",data =>{
-      console.log(data);
+      this.setCoronaDay(data);
     })
   },
   methods:{
-    ...mapMutations(['setData']),
+    ...mapMutations(['setData','setCoronaDay']),
   }
 }
 </script>
