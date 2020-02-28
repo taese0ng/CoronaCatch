@@ -13,8 +13,9 @@ export default {
       //console.log(data)
       this.setData(data);
     })
-    this.$socket.on("newUser",data=>{
-      this.setData(data);
+
+    this.$socket.on("accumulateData",data =>{
+      console.log(data);
     })
   },
   methods:{
