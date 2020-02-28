@@ -9,7 +9,8 @@ const server = app.listen(3000, function() {
 const request = require("request");
 
 const schedule = require("node-schedule");
-var num = 0;
+
+var coronaData = [];
 
 const io = require("socket.io")(server);
 
@@ -49,7 +50,9 @@ const j = schedule.scheduleJob('1 * * * * *',function(){
             return data;
         })
         .then(res => {
-            log(res);
+            coronaData = res;
+            log(coronaData);
+            
             io.emit("coronaData",res)
         });
 
@@ -60,5 +63,6 @@ io.on("connection", socket => {
     console.log(socket.client.id); // Prints client socket id
     //console.log(socket.id);
 
+    io.to(socket.client.id).emit("newUser",coronaData);
     
 });

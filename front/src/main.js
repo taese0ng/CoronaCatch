@@ -26,7 +26,7 @@ import { store } from "./store/store";
 import './registerServiceWorker'
 import io from "socket.io-client";
 
-Vue.prototype.$socket = io("172.30.1.30:3000");
+Vue.prototype.$socket = io("192.168.0.5:3000");
 // plugin setup
 Vue.use(VueRouter)
 Vue.use(LightBootstrap)
