@@ -9,10 +9,10 @@
             </div>
             <div slot="content">
               <p class="card-category">확진자</p>
-              <h4 class="card-title">{{situation.confirmed}} 명</h4>
+              <h4 class="card-title">{{this.getData[0].data}}</h4>
             </div>
             <div slot="footer">
-              <i class="fa fa-clock-o"></i>{{situation.date}}
+              <i class="fa fa-clock-o"></i>{{this.getDate}}
             </div>
           </stats-card>
         </div>
@@ -24,10 +24,10 @@
             </div>
             <div slot="content">
               <p class="card-category">사망자</p>
-              <h4 class="card-title">{{situation.death}} 명</h4>
+              <h4 class="card-title">{{this.getData[2].data}}</h4>
             </div>
             <div slot="footer">
-              <i class="fa fa-clock-o"></i>{{situation.date}}
+              <i class="fa fa-clock-o"></i>{{this.getDate}}
             </div>
           </stats-card>
         </div>
@@ -38,11 +38,11 @@
               <i class="nc-icon nc-favourite-28 text-success"></i>
             </div>
             <div slot="content">
-              <p class="card-category">완치자</p>
-              <h4 class="card-title">{{situation.cure}} 명</h4>
+              <p class="card-category">확진환자 격리해제</p>
+              <h4 class="card-title">{{this.getData[1].data}}</h4>
             </div>
             <div slot="footer">
-              <i class="fa fa-clock-o"></i>{{situation.date}}
+              <i class="fa fa-clock-o"></i>{{this.getDate}}
             </div>
           </stats-card>
         </div>
@@ -53,11 +53,11 @@
               <i class="nc-icon nc-zoom-split text-primary"></i>
             </div>
             <div slot="content">
-              <p class="card-category">검사자</p>
-              <h4 class="card-title">{{situation.examined}} 명</h4>
+              <p class="card-category">검사진행</p>
+              <h4 class="card-title">{{this.getData[3].data}}</h4>
             </div>
             <div slot="footer">
-              <i class="fa fa-clock-o"></i>{{situation.date}}
+              <i class="fa fa-clock-o"></i>{{this.getDate}}
             </div>
           </stats-card>
         </div>
@@ -140,6 +140,7 @@
   import ChartCard from 'src/components/Cards/ChartCard.vue'
   import StatsCard from 'src/components/Cards/StatsCard.vue'
   import LTable from 'src/components/Table.vue'
+  import { mapGetters, mapMutations } from 'vuex'
 
   export default {
     components: {
@@ -147,15 +148,11 @@
       ChartCard,
       StatsCard
     },
+    computed: {
+      ...mapGetters(['getData', 'getDate']),
+    },
     data () {
       return {
-        situation:{
-          date: '2020-02-26',
-          confirmed: 1000,
-          death: 10,
-          cure: 23,
-          examined: 8700,
-        },
         editTooltip: 'Edit Task',
         deleteTooltip: 'Remove',
         pieChart: {

@@ -6,11 +6,16 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 export default {
   created(){
     this.$socket.on("coronaData",data=>{
-      console.log(data)
+      //console.log(data)
+      this.setData(data);
     })
+  },
+  methods:{
+    ...mapMutations(['setData']),
   }
 }
 </script>
