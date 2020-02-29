@@ -10,13 +10,11 @@ import { mapMutations } from 'vuex'
 export default {
   created(){
     this.$socket.on("coronaData",data=>{
-      //console.log(data)
-      this.setData(data);
+      console.log(data)
+      this.setCoronaDay(data.accumulateData);
+      this.setData(data.coronaData)
     })
 
-    this.$socket.on("accumulateData",data =>{
-      this.setCoronaDay(data);
-    })
   },
   methods:{
     ...mapMutations(['setData','setCoronaDay']),

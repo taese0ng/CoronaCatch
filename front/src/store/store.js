@@ -74,7 +74,7 @@ export const store = new Vuex.Store({
             var maxNum = [];
             for (var i = 0; i < 7; i++) {
                 state.lineChart.data.labels[i] = state.corona_day[index + i].date;
-                state.lineChart.data.series[2][i] = state.corona_day[index + i].num;
+                state.lineChart.data.series[2][i] = state.corona_day[index + i].confirm;
             }
             
             maxNum.push(Math.max.apply(null, state.lineChart.data.series[2]));
