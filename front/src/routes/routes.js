@@ -4,8 +4,8 @@ import NotFound from '../pages/NotFoundPage.vue'
 
 // Admin pages
 import Overview from 'src/pages/Overview.vue'
-import TableList from 'src/pages/TableList.vue'
-import Typography from 'src/pages/Typography.vue'
+import Global from 'src/pages/Global.vue'
+import Local from 'src/pages/Local.vue'
 import Icons from 'src/pages/Icons.vue'
 import Maps from 'src/pages/Maps.vue'
 
@@ -13,12 +13,7 @@ const routes = [
   {
     path: '/',
     component: DashboardLayout,
-    redirect: '/admin/overview'
-  },
-  {
-    path: '/admin',
-    component: DashboardLayout,
-    redirect: '/admin/overview',
+    redirect: '/overview',
     children: [
       {
         path: 'overview',
@@ -26,14 +21,14 @@ const routes = [
         component: Overview
       },
       {
-        path: 'table-list',
-        name: 'Table List',
-        component: TableList
+        path: 'global',
+        name: 'Global',
+        component: Global
       },
       {
-        path: 'typography',
-        name: 'Typography',
-        component: Typography
+        path: 'local',
+        name: 'Local',
+        component: Local
       },
       {
         path: 'icons',

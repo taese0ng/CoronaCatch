@@ -25,14 +25,17 @@ import routes from './routes/routes'
 import { store } from "./store/store";
 import './registerServiceWorker'
 import io from "socket.io-client";
+import VueAnimateNumber from 'vue-animate-number';
 
 Vue.prototype.$socket = io("172.30.1.30:3000");
 // plugin setup
+Vue.use(VueAnimateNumber)
 Vue.use(VueRouter)
 Vue.use(LightBootstrap)
 
 // configure router
 const router = new VueRouter({
+  mode: 'history',
   routes, // short for routes: routes
   linkActiveClass: 'nav-item active',
   scrollBehavior: (to) => {

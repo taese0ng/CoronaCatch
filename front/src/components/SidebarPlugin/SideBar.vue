@@ -5,12 +5,12 @@
        :data-image="backgroundImage">
     <div class="sidebar-wrapper">
       <div class="logo">
-        <a href="#" class="simple-text logo__container">
+        <router-link tag='a' class="simple-text logo__container" to="/">
             <div class="logo-img">
                 <img src="img/logo.png" alt="">
             </div>
           {{title}}
-        </a>
+        </router-link>
       </div>
 
       <slot name="content"></slot>

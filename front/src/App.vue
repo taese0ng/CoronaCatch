@@ -11,13 +11,18 @@ export default {
   created(){
     this.$socket.on("coronaData",data=>{
       console.log(data)
-      this.setCoronaDay(data.accumulateData);
+      this.setCoronaDay(data.accumulateData)
       this.setData(data.coronaData)
+      this.setForeignData(data.foreignData)
+    }),
+    
+    this.$socket.on("areaData",data=>{
+      this.setLocalData(data)
+      console.log(data)
     })
-
   },
   methods:{
-    ...mapMutations(['setData','setCoronaDay']),
+    ...mapMutations(['setData','setCoronaDay', 'setForeignData', 'setLocalData']),
   }
 }
 </script>
@@ -48,5 +53,8 @@ export default {
       opacity: 0;
       transform: scale(1.2, 0.7);
     }
+  }
+  .main-panel{
+    overflow: auto;
   }
 </style>

@@ -2,12 +2,12 @@
   <gmap-map
     id="map"
     :center="center"
-    :zoom="13"
+    :zoom="7"
     :options="options"
-    map-type-id="terrain"
+    map-type-id="roadmap"
   >
-    <gmap-marker :position="center">
-    </gmap-marker>
+    <!-- <gmap-marker :position="center">
+    </gmap-marker> -->
   </gmap-map>
 </template>
 <script>
@@ -23,8 +23,8 @@
     data () {
       return {
         center: {
-          lat: 40.748817,
-          lng: -73.985428
+          lat: 36.494325,
+          lng: 127.817898
         },
         options: {
           styles: [{

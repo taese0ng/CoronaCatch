@@ -2,23 +2,23 @@
   <div class="wrapper">
     <side-bar>
       <mobile-menu slot="content"></mobile-menu>
-      <sidebar-link to="/admin/overview">
-        <i class="nc-icon nc-chart-pie-35"></i>
-        <p>Dashboard</p>
+      <sidebar-link to="/overview">
+        <i class="nc-icon nc-chart"></i>
+        <p>Home</p>
       </sidebar-link>
-      <sidebar-link to="/admin/table-list">
-        <i class="nc-icon nc-notes"></i>
-        <p>Table list</p>
+      <sidebar-link to="/global">
+        <i class="nc-icon nc-globe-2"></i>
+        <p>Global</p>
       </sidebar-link>
-      <sidebar-link to="/admin/typography">
-        <i class="nc-icon nc-paper-2"></i>
-        <p>Typography</p>
+      <sidebar-link to="/local">
+        <i class="nc-icon nc-square-pin"></i>
+        <p>Local</p>
       </sidebar-link>
-      <sidebar-link to="/admin/icons">
+      <sidebar-link to="/icons">
         <i class="nc-icon nc-atom"></i>
         <p>Icons</p>
       </sidebar-link>
-      <sidebar-link to="/admin/maps">
+      <sidebar-link to="/maps">
         <i class="nc-icon nc-pin-3"></i>
         <p>Maps</p>
       </sidebar-link>

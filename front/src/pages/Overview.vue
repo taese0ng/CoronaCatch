@@ -9,7 +9,7 @@
             </div>
             <div slot="content">
               <p class="card-category">확진자</p>
-              <h4 class="card-title">{{this.getData[0].data}} 명</h4>
+              <h4 class="card-title"><animate-number from="0" :to="this.getData[0].data"></animate-number> 명</h4>
             </div>
             <div slot="footer">
               <i class="fa fa-clock-o"></i>{{this.getDate}}
@@ -24,7 +24,7 @@
             </div>
             <div slot="content">
               <p class="card-category">사망자</p>
-              <h4 class="card-title">{{this.getData[2].data}} 명</h4>
+              <h4 class="card-title"><animate-number from="0" :to="this.getData[2].data"></animate-number> 명</h4>
             </div>
             <div slot="footer">
               <i class="fa fa-clock-o"></i>{{this.getDate}}
@@ -39,7 +39,7 @@
             </div>
             <div slot="content">
               <p class="card-category">확진환자 격리해제</p>
-              <h4 class="card-title">{{this.getData[1].data}} 명</h4>
+              <h4 class="card-title"><animate-number from="0" :to="this.getData[1].data"></animate-number> 명</h4>
             </div>
             <div slot="footer">
               <i class="fa fa-clock-o"></i>{{this.getDate}}
@@ -54,7 +54,7 @@
             </div>
             <div slot="content">
               <p class="card-category">검사진행</p>
-              <h4 class="card-title">{{this.getData[3].data}} 명</h4>
+              <h4 class="card-title"><animate-number from="0" :to="this.getData[3].data"></animate-number> 명</h4>
             </div>
             <div slot="footer">
               <i class="fa fa-clock-o"></i>{{this.getDate}}
@@ -70,7 +70,7 @@
                       :responsive-options="this.getlineChartData.responsiveOptions">
             <template slot="header">
               <h4 class="card-title">코로나 그래프</h4>
-              <p class="card-category">매일 코로나 환자 비교</p>
+              <p class="card-category">국내 코로나 환자 비교</p>
             </template>
             <template slot="footer">
               <div class="legend">
@@ -80,7 +80,7 @@
               </div>
               <hr>
               <div class="stats">
-                <i class="fa fa-history"></i> Updated 3 minutes ago
+                <i class="fa fa-history"></i> Updated 1 day ago
               </div>
             </template>
           </chart-card>
@@ -90,13 +90,13 @@
       <div class="row">
         <div class="col-md-12">
           <chart-card
-            :chart-data="barChart.data"
-            :chart-options="barChart.options"
-            :chart-responsive-options="barChart.responsiveOptions"
+            :chart-data="this.getbarChartData.data"
+            :chart-options="this.getbarChartData.options"
+            :chart-responsive-options="this.getbarChartData.responsiveOptions"
             chart-type="Bar">
             <template slot="header">
               <h4 class="card-title">코로나 글로벌 그래프</h4>
-              <p class="card-category">각 국가의 코로나피해 비교</p>
+              <p class="card-category">중국을 제외한 코로나 Top 7</p>
             </template>
             <template slot="footer">
               <div class="legend">
@@ -105,7 +105,7 @@
               </div>
               <hr>
               <div class="stats">
-                <i class="fa fa-check"></i> Data information certified
+                <i class="fa fa-history"></i> Updated 1 day ago
               </div>
             </template>
           </chart-card>
@@ -127,7 +127,7 @@
       StatsCard
     },
     computed: {
-      ...mapGetters(['getData', 'getDate','getlineChartData'])
+      ...mapGetters(['getData', 'getDate','getlineChartData', 'getbarChartData'])
     },
     data () {
       return {

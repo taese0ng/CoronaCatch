@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg">
     <div class="container-fluid">
-      <a class="navbar-brand" href="#">Corona Catch</a>
+      <router-link tag="a" class="navbar-brand" to="/">Corona Catch</router-link>
       <button type="button"
               class="navbar-toggler navbar-toggler-right"
               :class="{toggled: $sidebar.showSidebar}"
@@ -13,7 +13,7 @@
         <span class="navbar-toggler-bar burger-lines"></span>
         <span class="navbar-toggler-bar burger-lines"></span>
       </button>
-      <div class="collapse navbar-collapse justify-content-end">
+      <!-- <div class="collapse navbar-collapse justify-content-end">
         <ul class="nav navbar-nav mr-auto">
           <li class="nav-item">
             <a class="nav-link" href="#" data-toggle="dropdown">
@@ -49,7 +49,7 @@
             <a class="dropdown-item" href="#">Separated link</a>
           </base-dropdown>
         </ul>
-      </div>
+      </div> -->
     </div>
   </nav>
 </template>
