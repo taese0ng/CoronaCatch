@@ -85,7 +85,37 @@ export const store = new Vuex.Store({
              ]
            },
            foreignData: [],
-           localData: []
+           localData: [],
+           prevention_img:[
+             {
+               id: 1,
+               image: require("@/assets/img/prevention_1.png")
+             },
+             {
+               id: 2,
+               image: require("@/assets/img/prevention_2.png")
+             },
+             {
+               id: 3,
+               image: require("@/assets/img/prevention_3.png")
+             },
+             {
+               id: 4,
+               image: require("@/assets/img/prevention_4.png")
+             },
+             {
+               id: 5,
+               image: require("@/assets/img/prevention_5.png")
+             },
+             {
+               id: 6,
+               image: require("@/assets/img/prevention_6.png")
+             },
+             {
+               id: 7,
+               image: require("@/assets/img/prevention_7.jpeg")
+             },
+           ]
          },
          // Getter
          getters: {
@@ -149,6 +179,9 @@ export const store = new Vuex.Store({
               검사인원: local[0].check
             });
             return data;
+           },
+           getPrevention(state){
+             return state.prevention_img;
            }
          },
          // Method

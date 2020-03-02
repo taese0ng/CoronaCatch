@@ -22,6 +22,14 @@
         <i class="nc-icon nc-pin-3"></i>
         <p>Maps</p>
       </sidebar-link>
+      <sidebar-link to="/prevention">
+        <i class="nc-icon nc-bulb-63"></i>
+        <p>Prevention</p>
+      </sidebar-link>
+      <sidebar-link to="/about">
+        <i class="nc-icon nc-badge"></i>
+        <p>About</p>
+      </sidebar-link>
 
     </side-bar>
     <div class="main-panel">

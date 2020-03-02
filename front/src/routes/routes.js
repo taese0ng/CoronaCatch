@@ -8,6 +8,8 @@ import Global from 'src/pages/Global.vue'
 import Local from 'src/pages/Local.vue'
 import Icons from 'src/pages/Icons.vue'
 import Maps from 'src/pages/Maps.vue'
+import About from 'src/pages/About.vue'
+import Prevention from 'src/pages/Prevention.vue'
 
 const routes = [
   {
@@ -39,6 +41,16 @@ const routes = [
         path: 'maps',
         name: 'Maps',
         component: Maps
+      },
+      {
+        path: 'prevention',
+        name: 'Prevention',
+        component: Prevention
+      },
+      {
+        path: 'about',
+        name: 'About',
+        component: About
       }
     ]
   },
