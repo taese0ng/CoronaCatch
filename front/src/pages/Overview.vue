@@ -64,19 +64,38 @@
 
       </div>
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
           <chart-card :chart-data="this.getlineChartData.data"
                       :chart-options="this.getlineChartData.options"
                       :responsive-options="this.getlineChartData.responsiveOptions">
             <template slot="header">
               <h4 class="card-title">코로나 그래프</h4>
-              <p class="card-category">국내 코로나 환자 비교</p>
+              <p class="card-category">국내 코로나 확진자 비교</p>
+            </template>
+            <template slot="footer">
+              <div class="legend">
+                <i class="fa fa-circle text-info"></i> 확진자
+              </div>
+              <hr>
+              <div class="stats">
+                <i class="fa fa-history"></i> Updated 1 day ago
+              </div>
+            </template>
+          </chart-card>
+        </div>
+
+        <div class="col-md-6">
+          <chart-card :chart-data="this.getlineChartData.data2"
+                      :chart-options="this.getlineChartData.options2"
+                      :responsive-options="this.getlineChartData.responsiveOptions">
+            <template slot="header">
+              <h4 class="card-title">코로나 그래프</h4>
+              <p class="card-category">국내 코로나 사망자, 격리해제 비교</p>
             </template>
             <template slot="footer">
               <div class="legend">
                 <i class="fa fa-circle text-info"></i> 격리해제
                 <i class="fa fa-circle text-danger"></i> 사망자
-                <i class="fa fa-circle text-warning"></i> 확진자
               </div>
               <hr>
               <div class="stats">
@@ -88,7 +107,7 @@
       </div>
 
       <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
           <chart-card
             :chart-data="this.getbarChartData.data"
             :chart-options="this.getbarChartData.options"
@@ -96,11 +115,32 @@
             chart-type="Bar">
             <template slot="header">
               <h4 class="card-title">코로나 글로벌 그래프</h4>
-              <p class="card-category">중국을 제외한 코로나 Top 7</p>
+              <p class="card-category">중국을 제외한 국가별 코로나 확진자 순위</p>
             </template>
             <template slot="footer">
               <div class="legend">
                 <i class="fa fa-circle text-info"></i> 확진자
+              </div>
+              <hr>
+              <div class="stats">
+                <i class="fa fa-history"></i> Updated 1 day ago
+              </div>
+            </template>
+          </chart-card>
+        </div>
+
+        <div class="col-md-6">
+          <chart-card
+            :chart-data="this.getbarChartData.data2"
+            :chart-options="this.getbarChartData.options"
+            :chart-responsive-options="this.getbarChartData.responsiveOptions"
+            chart-type="Bar">
+            <template slot="header">
+              <h4 class="card-title">코로나 글로벌 그래프</h4>
+              <p class="card-category">중국을 제외한 국가별 코로나 사망자 순위</p>
+            </template>
+            <template slot="footer">
+              <div class="legend">
                 <i class="fa fa-circle text-danger"></i> 사망자
               </div>
               <hr>

@@ -1,1 +1,1 @@
-export const API_KEY = 'API키 입력'
+export const API_KEY = "API_KEY";

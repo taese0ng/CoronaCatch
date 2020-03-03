@@ -27,9 +27,29 @@ export const store = new Vuex.Store({
            lineChart: {
              data: {
                labels: [],
-               series: [[], [], []]
+               series: [[]]
+             },
+             data2: {
+               labels: [],
+               series: [[], []]
              },
              options: {
+               low: 0,
+               high: "",
+               showArea: false,
+               height: "245px",
+               axisX: {
+                 showGrid: false
+               },
+               lineSmooth: true,
+               showLine: true,
+               showPoint: true,
+               fullWidth: true,
+               chartPadding: {
+                 right: 50
+               }
+             },
+             options2: {
                low: 0,
                high: "",
                showArea: false,
@@ -60,6 +80,10 @@ export const store = new Vuex.Store({
            },
            barChart: {
              data: {
+               labels: [],
+               series: [[], []]
+             },
+             data2: {
                labels: [],
                series: [[], []]
              },
@@ -196,18 +220,20 @@ export const store = new Vuex.Store({
              for (var i = 0; i < 7; i++) {
                state.lineChart.data.labels[i] =
                  state.corona_day[index + i].date;
+               state.lineChart.data2.labels[i] =
+                 state.corona_day[index + i].date;
                state.lineChart.data.series[0][i] =
-                 state.corona_day[index + i].unlock;
-               state.lineChart.data.series[1][i] =
-                 state.corona_day[index + i].die;
-               state.lineChart.data.series[2][i] =
                  state.corona_day[index + i].confirm;
+               state.lineChart.data2.series[0][i] =
+                 state.corona_day[index + i].unlock;
+               state.lineChart.data2.series[1][i] =
+                 state.corona_day[index + i].die;
              }
 
-             maxNum.push(Math.max.apply(null, state.lineChart.data.series[2]));
-             maxNum.push(Math.max.apply(null, state.lineChart.data.series[0]));
-             maxNum.push(Math.max.apply(null, state.lineChart.data.series[1]));
-             state.lineChart.options.high = Math.max.apply(null, maxNum);
+             maxNum.push(Math.max.apply(null, state.lineChart.data2.series[0]));
+             maxNum.push(Math.max.apply(null, state.lineChart.data2.series[1]));
+             state.lineChart.options.high = Math.max.apply(null, state.lineChart.data.series[0]);
+             state.lineChart.options2.high = Math.max.apply(null, maxNum);
            },
            setForeignData(state, data) {
              var foreign = data;
@@ -215,27 +241,39 @@ export const store = new Vuex.Store({
              korea.confirm = String(state.corona_data[0].data);
              korea.die = String(state.corona_data[2].data);
              foreign.push(korea);
+            
              var sortingField = "confirm";
              foreign.sort(function(a, b) {
                return b[sortingField] - a[sortingField];
              });
              state.foreignData = foreign;
+
              for (var i = 0; i < 7; i++) {
-               state.barChart.data.labels[i] = foreign[i+2].country;
-               state.barChart.data.series[0][i] = foreign[i+2].confirm;
-               state.barChart.data.series[1][i] = foreign[i+2].die;
+               state.barChart.data.labels[i] = foreign[i + 2].country;
+               state.barChart.data.series[0][i] = foreign[i + 2].confirm;
+             }
+
+             sortingField = "die";
+             foreign.sort(function(a, b) {
+               return b[sortingField] - a[sortingField];
+             });
+
+             for (var i = 0; i < 7; i++) {
+               state.barChart.data2.labels[i] = foreign[i + 2].country;
+               state.barChart.data2.series[1][i] = foreign[i + 2].die;
              }
              console.log("정렬된 국가");
              console.log(foreign);
            },
            setLocalData(state,data){
+             console.log("ddd", data);
              var local = data;
              var sortingField = 'confirm';
              local.sort(function(a,b){
                return b[sortingField] - a[sortingField];
              });
              state.localData = local;
-           }
+           },
          },
          // Actions
          actions: {},

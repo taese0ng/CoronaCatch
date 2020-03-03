@@ -25,7 +25,7 @@
   import LTable from 'src/components/Table.vue'
   import Card from 'src/components/Cards/Card.vue'
   import { mapGetters } from 'vuex'
-  const tableColumns = ['id', '지역', '확진자', '격리해제', '사망자', '검사인원']
+  const tableColumns = ['id', '지역', '확진자', '격리해제', '사망자', '전일대비확진환자증감']
   
   export default {
     components: {
