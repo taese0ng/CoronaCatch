@@ -14,10 +14,10 @@
         <i class="nc-icon nc-square-pin"></i>
         <p>Local</p>
       </sidebar-link>
-      <sidebar-link to="/icons">
+      <!-- <sidebar-link to="/icons">
         <i class="nc-icon nc-atom"></i>
         <p>Icons</p>
-      </sidebar-link>
+      </sidebar-link> -->
       <sidebar-link to="/maps">
         <i class="nc-icon nc-pin-3"></i>
         <p>Maps</p>

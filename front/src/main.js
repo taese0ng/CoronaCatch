@@ -27,7 +27,7 @@ import './registerServiceWorker'
 import io from "socket.io-client";
 import VueAnimateNumber from 'vue-animate-number';
 
-Vue.prototype.$socket = io("172.30.1.30:3000");
+Vue.prototype.$socket = io("49.50.166.64:80");
 // plugin setup
 Vue.use(VueAnimateNumber)
 Vue.use(VueRouter)

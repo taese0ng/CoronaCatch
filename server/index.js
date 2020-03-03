@@ -208,7 +208,7 @@ getHtml()
   });
 
 // 매시간(테스트용 1분마다)마다 데이터 크롤링 후 프론트로 전송
-const j = schedule.scheduleJob("1 * * * * *", function() {
+const j = schedule.scheduleJob("1 1 * * * *", function() {
   let date = new Date();
   let month = date.getMonth() + 1;
   let day = date.getDate();

@@ -1,1 +1,1 @@
-export const API_KEY = 'AIzaSyDFkUviEGRU__ER7OX-EBxvXFwqq5Ytw28'
+export const API_KEY = 'API키 입력'
