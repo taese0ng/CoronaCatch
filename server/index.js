@@ -2,8 +2,9 @@ const axios = require("axios");
 const cheeiro = require("cheerio");
 const log = console.log;
 const express = require("express");
+var history = require('connect-history-api-fallback'); //npm install --save connect-history-api-fallback
 const app = express();
-const server = app.listen(3000, function() {
+const server = app.use(history()).listen(3000, function() {
   console.log("Listening on port *: 3000");
 });
 const schedule = require("node-schedule");
