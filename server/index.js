@@ -36,6 +36,18 @@ const csvWriter = createCsvWriter({
   recordDelimiter:'\r\n'
 });
 
+//csv파일에 덮어쓰기 위한 writer선언
+const csvUpdateWriter = createCsvWriter({
+  path:'accumulateData.csv',
+  header:[
+    {id:"date", title:"date"},
+    {id:"confirm", title:"confirm"},
+    {id:"unlock", title:"unlock"},
+    {id:"die", title:"die"}
+  ],
+  recordDelimiter:'\r\n'
+});
+
 
 const io = require("socket.io")(server);
 
@@ -137,6 +149,7 @@ const getGlobalData = function(html){
   let dateKey = "" + month + "/" + day;
   let ulList = [];
   let countryList = [];
+  let updateCheck = false;
   const $ = cheeiro.load(html.data);
   const $bodyList = $("div.data_table table.num tbody").children("tr");
 
@@ -159,7 +172,9 @@ const getGlobalData = function(html){
       let data = parseInt(data_str);
 
       if (i == 0) {
+        
         if (overlapCheck(dateKey)){
+          updateCheck = false;
           overlap = false;
           accumulateData[accumulateData.length] = {
             date: dateKey,
@@ -169,6 +184,8 @@ const getGlobalData = function(html){
         else 
         {
           overlap = true;
+          if(accumulateData[accumulateData.length - 1]["confirm"] != data_str)
+            updateCheck = true;
           accumulateData[accumulateData.length - 1]["confirm"] = data_str;
         }
       } 
@@ -223,9 +240,18 @@ const getGlobalData = function(html){
     addDate.push(accumulateData[accumulateData.length-1]);
     csvWriter.writeRecords(addDate)
     .then(()=>{
-      log("CSV 파일 저장 성공!");
+      log("CSV 파일에 추가 성공!");
     });
   }
+  if(updateCheck)
+  {
+    csvUpdateWriter.writeRecords(accumulateData)
+    .then(()=>{
+      log("CSV 파일 다시 저장 성공!")
+    });
+  }
+  
+  updateCheck = false;
   overlap = false;
   const data = {
     domestic: ulList,
