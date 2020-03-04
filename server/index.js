@@ -2,6 +2,8 @@ const axios = require("axios");
 const cheeiro = require("cheerio");
 const log = console.log;
 const express = require("express");
+const createCsvWriter = require('csv-writer').createObjectCsvWriter;
+const csv = require('csvtojson');
 var history = require('connect-history-api-fallback'); //npm install --save connect-history-api-fallback
 const app = express();
 const server = app.use(history()).listen(3000, function() {
@@ -12,29 +14,34 @@ const schedule = require("node-schedule");
 var coronaData = [];
 var foreignData = [];
 var areaData = [];
+var accumulateData = [];
 
-var accumulateData = [
-  { date: "2/18", confirm: 31, unlock: 12, die: 0 },
-  { date: "2/19", confirm: 51, unlock: 16, die: 0 },
-  { date: "2/20", confirm: 104, unlock: 16, die: 1 },
-  { date: "2/21", confirm: 204, unlock: 17, die: 1 },
-  { date: "2/22", confirm: 433, unlock: 18, die: 2 },
-  { date: "2/23", confirm: 602, unlock: 18, die: 5 },
-  { date: "2/24", confirm: 833, unlock: 22, die: 7 },
-  { date: "2/25", confirm: 977, unlock: 22, die: 10 },
-  { date: "2/26", confirm: 1261, unlock: 24, die: 12 },
-  { date: "2/27", confirm: 1766, unlock: 26, die: 13 },
-  { date: "2/28", confirm: 2337, unlock: 27, die: 13 },
-  { date: "2/29", confirm: 3150, unlock: 28, die: 17 },
-  { date: "3/1", confirm: 3736, unlock: 30, die: 18 },
-  { date: "3/2", confirm: 4212, unlock: 31, die: 22 },
-  { date: "3/3", confirm: 4812, unlock: 34, die: 28 }
-];
+//기존 파일 읽어서 서버의 배열에 저장
+csv().fromFile('accumulateData.csv')
+  .then((json)=>{
+  accumulateData  = json;
+  
+});
+
+//csv파일에 저장하기 위한 writer선언
+const csvWriter = createCsvWriter({
+  path:'accumulateData.csv',
+  header:[
+    {id:"date", title:"date"},
+    {id:"confirm", title:"confirm"},
+    {id:"unlock", title:"unlock"},
+    {id:"die", title:"die"}
+  ],
+  append:true,
+  recordDelimiter:'\r\n'
+});
+
 
 const io = require("socket.io")(server);
 
 app.use(express.static("dist"));
 
+// 국가별, 국내총 데이터 가져옴
 const getHtml = async () => {
   try {
     return await axios.get(
@@ -45,6 +52,7 @@ const getHtml = async () => {
   }
 };
 
+// 지역별 데이터 가져옴
 const getHtmlDomestic = async () => {
   try {
     return await axios.get(
@@ -54,16 +62,16 @@ const getHtmlDomestic = async () => {
     console.error(err);
   }
 };
-//중복제외 검사
 
+// 1시간마다 갱신하기 때문에 중복제외 검사
 const overlapCheck = function(dateKey) {
   if (accumulateData[accumulateData.length - 1]["date"] != dateKey) return true;
   return false;
 };
 
-getHtmlDomestic()
-  .then(html => {
-    let list = {};
+// 지역별 데이터 가져오는 방법 정의
+const getLocalData = function(html){
+  let list = {};
     const $ = cheeiro.load(html.data);
     const $bodyList = $("div.data_table table.num tbody").children("tr");
     const time = $("div.timetable p.info").children("span").text();
@@ -107,7 +115,6 @@ getHtmlDomestic()
       let check = parseInt(check_str);
       let die = parseInt(die_str);
 
-
       if (area != "검역")
         list['data'][i] = {
           area: area,
@@ -115,273 +122,178 @@ getHtmlDomestic()
           confirm: confirm,
           die: die,
           check: check,
-          
-
         };
     });
     const data = list;
     return data;
-  })
-  .then(res => {
-    areaData = res;
-    log(res.data);
-  });
+}
 
-//서버 실행 시 데이터 크롤링
-getHtml()
-  .then(html => {
-    let date = new Date();
-    let month = date.getMonth() + 1;
-    let day = date.getDate();
-
-    let dateKey = "" + month + "/" + day;
-    let ulList = [];
-    let countryList = [];
-    const $ = cheeiro.load(html.data);
-    const $bodyList = $("div.data_table table.num tbody").children("tr");
-
-    // 0: 확진환자 1: 확진환자 격리해제 2: 사망자 3: 검사진행
-    $bodyList.each(function(i, elem) {
-      let title = $(this)
-        .children("th")
-        .text();
-      let country = $(this)
-        .children("td.w_bold")
-        .text();
-      let data_str = $(this)
-        .children("td")
-        .text();
-      data_str = data_str.replace(/,/gi, "").replace(/명/gi, "");
-
-      //국내 데이터
-      if (i in [0, 1, 2, 3]) {
-        let data = parseInt(data_str);
-
-        //0번 이면서 데이터가 있지 않으면
-
-        if (i == 0) {
-          if (overlapCheck(dateKey))
-            accumulateData[accumulateData.length] = {
-              date: dateKey,
-              confirm: data
-            };
-          else accumulateData[accumulateData.length - 1]["confirm"] = data;
-        } else if (i == 1)
-          accumulateData[accumulateData.length - 1]["unlock"] = data;
-        else if (i == 2)
-          accumulateData[accumulateData.length - 1]["die"] = data;
-
-        ulList[i] = {
-          title: title,
-          data: data
-        };
-      }
-
-      //국외 데이터
-      else {
-        // log("나라: "+country)
-        // log("데이터 총합: "+data_str)
-        let temp = data_str
-          .replace(country, "")
-          .replace(/\(/gi, "")
-          .replace(/\)/gi, "");
-        // log("자름: "+temp)
-
-        if (temp.indexOf("사망 ")) {
-          let confirm = temp.slice(0, temp.indexOf("사"));
-          let die = temp.slice(temp.indexOf("망") + 2, temp.length);
-
-          // log("111: "+confirm)
-          // log("222: "+die)
-
-          countryList[i - 4] = {
-            country: country,
-            confirm: confirm,
-            die: die
-          };
-        } else
-          countryList[i - 4] = {
-            country: country,
-            confirm: temp,
-            die: 0
-          };
-      }
-    });
-    // console.log(ulList)
-    const data = {
-      domestic: ulList,
-      foreign: countryList
-    };
-    return data;
-  })
-  .then(res => {
-    // log(accumulateData)
-    coronaData = res.domestic;
-    foreignData = res.foreign;
-    // log(coronaData);
-  });
-
-// 매시간(테스트용 1분마다)마다 데이터 크롤링 후 프론트로 전송
-const j = schedule.scheduleJob("1 1 * * * *", function() {
+//국내 국가별 데이터 가져오는 방법 정의
+const getGlobalData = function(html){
   let date = new Date();
   let month = date.getMonth() + 1;
   let day = date.getDate();
-
+  let overlap = false;
   let dateKey = "" + month + "/" + day;
+  let ulList = [];
+  let countryList = [];
+  const $ = cheeiro.load(html.data);
+  const $bodyList = $("div.data_table table.num tbody").children("tr");
 
-  //없는 key (새로 들어오는 데이터면 초기화)
-
-  getHtmlDomestic()
-    .then(html => {
-      let list = {};
-      const $ = cheeiro.load(html.data);
-      const $bodyList = $("div.data_table table.num tbody").children("tr");
-      const time = $("div.timetable p.info").children("span").text();
-      list['time'] = time;
-      list['data'] = [];
-      $bodyList.each(function(i, elem) {
-        let area = $(this)
+  // 0: 확진환자 1: 확진환자 격리해제 2: 사망자 3: 검사진행
+  $bodyList.each(function(i, elem) {
+    let title = $(this)
           .children("th")
           .text();
-
-        let increase_str = $(this)
-          .children("td")
-          .eq(0)
-          .text()
-          .replace(/\t/gi, "")
-          .replace(/,/gi, "");
-
-        let confirm_str = $(this)
-          .children("td")
-          .eq(1)
-          .text()
-          .replace(/\t/gi, "")
-          .replace(/,/gi, "");
-
-        let die_str = $(this)
-          .children("td")
-          .eq(2)
-          .text()
-          .replace(/\t/gi, "")
-          .replace(/,/gi, "");
-        
-        let check_str = $(this)
-          .children("td")
-          .eq(4)
-          .text()
-          .replace(/\t/gi, "")
-          .replace(/,/gi, "");
-      
-        let increase = parseInt(increase_str);
-        let confirm = parseInt(confirm_str);
-        let check = parseInt(check_str);
-        let die = parseInt(die_str);
-
-
-        if (area != "검역")
-          list['data'][i] = {
-            area: area,
-            increase:increase,
-            confirm: confirm,
-            die: die,
-            check: check,
-            
-
-          };
-      });
-      const data = list;
-      return data;
-    })
-    .then(res => {
-      areaData = res;
-      io.emit("areaData", areaData);
-      log(res);
-    });
-
-  getHtml()
-    .then(html => {
-      let ulList = [];
-      let countryList = [];
-      const $ = cheeiro.load(html.data);
-      const $bodyList = $("div.data_table table.num tbody").children("tr");
-
-      // 0: 확진환자 1: 확진환자 격리해제 2: 사망자 3: 검사진행
-      $bodyList.each(function(i, elem) {
-        let title = $(this)
-          .children("th")
-          .text();
-        let country = $(this)
+    let country = $(this)
           .children("td.w_bold")
           .text();
-        let data_str = $(this)
+    let data_str = $(this)
           .children("td")
           .text();
-        data_str = data_str.replace(/,/gi, "").replace(/명/gi, "");
+    data_str = data_str.replace(/,/gi, "").replace(/명/gi, "");
 
-        //국내 데이터
-        if (i in [0, 1, 2, 3]) {
-          let data = parseInt(data_str);
+    //국내 데이터
+    if (i in [0, 1, 2, 3]) {
+      data_str = data_str.replace(/\s/gi,"");
+      let data = parseInt(data_str);
 
-          if (i == 0) {
-            if (overlapCheck(dateKey))
-              accumulateData[accumulateData.length] = {
-                date: dateKey,
-                confirm: data
-              };
-            else accumulateData[accumulateData.length - 1]["confirm"] = data;
-          } else if (i == 1)
-            accumulateData[accumulateData.length - 1]["unlock"] = data;
-          else if (i == 2)
-            accumulateData[accumulateData.length - 1]["die"] = data;
+      if (i == 0) {
+        if (overlapCheck(dateKey)){
+          overlap = false;
+          accumulateData[accumulateData.length] = {
+            date: dateKey,
+            confirm: data_str
+          };
+        }
+        else 
+        {
+          overlap = true;
+          accumulateData[accumulateData.length - 1]["confirm"] = data_str;
+        }
+      } 
+      else if (i == 1)
+        accumulateData[accumulateData.length - 1]["unlock"] = data_str;
+      else if (i == 2)
+        accumulateData[accumulateData.length - 1]["die"] = data_str;
 
-          ulList[i] = {
+      ulList[i] = {
             title: title,
             data: data
           };
-        }
+    }
 
-        //국외 데이터
-        else {
-          let temp = data_str
+    //국외 데이터
+    else {
+      let temp = data_str
             .replace(country, "")
             .replace(/\(/gi, "")
             .replace(/\)/gi, "");
 
-          if (temp.indexOf("사망 ") != -1) {
-            let confirm = temp.slice(0, temp.indexOf("사"));
-            let die = temp.slice(temp.indexOf("망") + 2, temp.length);
+      if (temp.indexOf("사망 ") != -1) {
+        let confirm = temp.slice(0, temp.indexOf("사"));
+        let die = temp.slice(temp.indexOf("망") + 2, temp.length);
 
-            countryList[i - 4] = {
+        confirm = parseInt(confirm);
+        
+        die = parseInt(die);
+          
+        countryList[i - 4] = {
               country: country,
               confirm: confirm,
               die: die
             };
-          } else
-            countryList[i - 4] = {
-              country: country,
-              confirm: temp,
-              die: 0
-            };
-        }
-      });
-      // console.log(ulList)
-      const data = {
-        domestic: ulList,
-        foreign: countryList
-      };
-      return data;
+      } 
+      else
+      {
+        temp = parseInt(temp);
+        countryList[i - 4] = {
+            country: country,
+            confirm: temp,
+            die: 0
+        };
+      }
+    }
+  });
+
+  // 저장 중복 검사
+  if(!overlap){
+    
+    const addDate = [];
+    addDate.push(accumulateData[accumulateData.length-1]);
+    csvWriter.writeRecords(addDate)
+    .then(()=>{
+      log("CSV 파일 저장 성공!");
+    });
+  }
+  overlap = false;
+  const data = {
+    domestic: ulList,
+    foreign: countryList
+  };
+  return data;
+}
+
+//서버 시작시 한번 동작
+getHtmlDomestic()
+  .then(html=>{
+    let res = getLocalData(html);
+    return res
+  })
+  .then(res =>{
+    areaData = res;
+    // log("국내별");
+    // log(areaData);
+  })
+
+getHtml()
+  .then(html => {
+    let res = getGlobalData(html);
+    return res;
+  })
+  .then(res => {
+    coronaData = res.domestic;
+    foreignData = res.foreign;
+    // log("국가별");
+    log(res);
+    // log("누적");
+    // log(accumulateData);
+    return res;
+  });
+
+
+// 매시간(테스트용 1분마다)마다 데이터 크롤링 후 프론트로 전송
+const j = schedule.scheduleJob("1 1 * * * *", function() {
+
+  getHtmlDomestic()
+    .then(html => {
+      let res = getLocalData(html);
+      return res
+    })
+    .then(res => {
+      areaData = res;
+      io.emit("areaData", areaData);
+      // log("1시간 후 국내별");
+      // log(res);
+    });
+
+  getHtml()
+    .then(html => {
+      let res = getGlobalData(html);
+      return res;
     })
     .then(res => {
       coronaData = res.domestic;
       foreignData = res.foreign;
-
-      // log(coronaData);
       let data = {
         accumulateData: accumulateData,
         coronaData: res.domestic,
         foreignData: res.foreign
       };
-      // log(accumulateData)
+      // log("1시간 후 국가별");
+      // log(res);
+      // log("1시간 후 누적");
+      // log(accumulateData);
       io.emit("coronaData", data);
     });
 });
