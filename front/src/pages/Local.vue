@@ -8,11 +8,11 @@
           >
             <template slot="header">
               <h4 class="card-title">지역별 코로나 현황</h4>
-              <p class="card-category">전국 현재 상황</p>
+              <p class="card-category">전국 {{this.getLocalData.time}} 기준 현황 </p>
             </template>
             <l-table class="table-hover table-striped"
                      :columns="table.columns"
-                     :data="this.getLocalData">
+                     :data="this.getLocalData.data">
             </l-table>
           </card>
 
@@ -25,7 +25,7 @@
   import LTable from 'src/components/Table.vue'
   import Card from 'src/components/Cards/Card.vue'
   import { mapGetters } from 'vuex'
-  const tableColumns = ['id', '지역', '확진자', '격리해제', '사망자', '전일대비확진환자증감']
+  const tableColumns = ['id', '지역', '확진자', '사망자', '일일검사수', '전일대비확진환자증감']
   
   export default {
     components: {

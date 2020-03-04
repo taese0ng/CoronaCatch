@@ -36,7 +36,7 @@ export const store = new Vuex.Store({
              options: {
                low: 0,
                high: "",
-               showArea: false,
+               showArea: true,
                height: "245px",
                axisX: {
                  showGrid: false
@@ -52,7 +52,7 @@ export const store = new Vuex.Store({
              options2: {
                low: 0,
                high: "",
-               showArea: false,
+               showArea: true,
                height: "245px",
                axisX: {
                  showGrid: false
@@ -109,7 +109,7 @@ export const store = new Vuex.Store({
              ]
            },
            foreignData: [],
-           localData: [],
+           localData: {time:"", data:[]},
            prevention_img:[
              {
                id: 1,
@@ -181,27 +181,29 @@ export const store = new Vuex.Store({
              return data;
            },
            getLocalData(state){
-            var local = state.localData;
-            var data = [];
+            var local = state.localData.data;
+            var data = {time:"", data:[]};
             var i;
             for(i=1; i<local.length; i++){
-              data.push({
+              data.data.push({
                 id: i,
                 지역: local[i].area,
                 확진자: local[i].confirm,
-                격리해제: local[i].unlock,
                 사망자: local[i].die,
-                검사인원: local[i].check
+                일일검사수: local[i].check,
+                전일대비확진환자증감: local[i].increase
               })
             }
-            data.push({
+            data.data.push({
               id: i,
               지역: local[0].area,
               확진자: local[0].confirm,
-              격리해제: local[0].unlock,
               사망자: local[0].die,
-              검사인원: local[0].check
+              일일검사수: local[0].check,
+              전일대비확진환자증감: local[0].increase
             });
+            data.time = state.localData.time;
+            console.log("time", data.time);
             return data;
            },
            getPrevention(state){
@@ -265,14 +267,15 @@ export const store = new Vuex.Store({
              console.log("정렬된 국가");
              console.log(foreign);
            },
-           setLocalData(state,data){
+           setLocalData(state, data){
              console.log("ddd", data);
-             var local = data;
+             var local = data.data;
              var sortingField = 'confirm';
              local.sort(function(a,b){
                return b[sortingField] - a[sortingField];
              });
-             state.localData = local;
+             state.localData.time = data.time;
+             state.localData.data = local;
            },
          },
          // Actions

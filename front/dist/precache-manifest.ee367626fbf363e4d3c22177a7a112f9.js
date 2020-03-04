@@ -1,11 +1,11 @@
 self.__precacheManifest = [
   {
-    "revision": "9eaf030a902dbcf71953",
-    "url": "/css/app.6c6cdd56.css"
+    "revision": "e87dae799b86095a8e47",
+    "url": "/css/app.7190f51d.css"
   },
   {
-    "revision": "9eaf030a902dbcf71953",
-    "url": "/js/app.268e576f.js"
+    "revision": "e87dae799b86095a8e47",
+    "url": "/js/app.6a9463ec.js"
   },
   {
     "revision": "d8a0d5d998fce244a2d7",
@@ -44,16 +44,16 @@ self.__precacheManifest = [
     "url": "/img/prevention_6.16849660.png"
   },
   {
+    "revision": "8224e0160e362e117cbe00495919e2af",
+    "url": "/fonts/nucleo-icons.8224e016.eot"
+  },
+  {
     "revision": "ff208b8d733e61a630992ee2b72c9c1c",
     "url": "/fonts/nucleo-icons.ff208b8d.woff2"
   },
   {
     "revision": "b0dc05d015e91e7d28d79cd0056fe555",
     "url": "/fonts/nucleo-icons.b0dc05d0.ttf"
-  },
-  {
-    "revision": "8224e0160e362e117cbe00495919e2af",
-    "url": "/fonts/nucleo-icons.8224e016.eot"
   },
   {
     "revision": "ae42fa524981a56f3f289447cff36eb1",
@@ -64,24 +64,16 @@ self.__precacheManifest = [
     "url": "/img/prevention_1.1adc6af1.png"
   },
   {
-    "revision": "30cda5d1ddaac3399141de1739430cab",
+    "revision": "e928091c082ab3effd19ec6ec5d9313c",
     "url": "/index.html"
-  },
-  {
-    "revision": "d41d8cd98f00b204e9800998ecf8427e",
-    "url": "/.gitkeep"
-  },
-  {
-    "revision": "a9615bac158705203261e8348f574cc8",
-    "url": "/img/default-avatar.png"
   },
   {
     "revision": "996d8248f580f8e26e6c45c67da9b5a6",
     "url": "/favicon.png"
   },
   {
-    "revision": "99e58416b89637502b40ac8350eed85a",
-    "url": "/img/faces/face-1.jpg"
+    "revision": "a9615bac158705203261e8348f574cc8",
+    "url": "/img/default-avatar.png"
   },
   {
     "revision": "a9615bac158705203261e8348f574cc8",
@@ -92,8 +84,20 @@ self.__precacheManifest = [
     "url": "/Dashboard.PNG"
   },
   {
+    "revision": "d41d8cd98f00b204e9800998ecf8427e",
+    "url": "/.gitkeep"
+  },
+  {
     "revision": "0e953b1ea6d6e3addd7210e9c7c420a7",
     "url": "/img/faces/face-2.jpg"
+  },
+  {
+    "revision": "4ab22eca4053c14a34e4bdb6390deae9",
+    "url": "/img/faces/face-5.jpg"
+  },
+  {
+    "revision": "99e58416b89637502b40ac8350eed85a",
+    "url": "/img/faces/face-1.jpg"
   },
   {
     "revision": "ce7a6b79aa55041f7ae36f6ce22231fe",
@@ -104,24 +108,20 @@ self.__precacheManifest = [
     "url": "/img/faces/face-4.jpg"
   },
   {
-    "revision": "4ab22eca4053c14a34e4bdb6390deae9",
-    "url": "/img/faces/face-5.jpg"
+    "revision": "bf1684a30a86ba1b222aab3acff16356",
+    "url": "/img/faces/face-7.jpg"
   },
   {
     "revision": "4b87e628f4ef9988718860890b2a682f",
     "url": "/img/faces/face-6.jpg"
   },
   {
-    "revision": "bf1684a30a86ba1b222aab3acff16356",
-    "url": "/img/faces/face-7.jpg"
+    "revision": "996d8248f580f8e26e6c45c67da9b5a6",
+    "url": "/img/favicon.png"
   },
   {
     "revision": "43b98081492ac3bcb4a1fac6cf709403",
     "url": "/img/faces/tim_vector.jpe"
-  },
-  {
-    "revision": "996d8248f580f8e26e6c45c67da9b5a6",
-    "url": "/img/favicon.png"
   },
   {
     "revision": "0a337c37f03c0462996b7b03758fa72b",
@@ -132,12 +132,12 @@ self.__precacheManifest = [
     "url": "/img/logo 2.png"
   },
   {
-    "revision": "f575a04ebbb31b5798a4c54783e745a2",
-    "url": "/img/new_logo.png"
-  },
-  {
     "revision": "d27fbc90c2e644dfdc9765640dc713b9",
     "url": "/img/mask.png"
+  },
+  {
+    "revision": "f575a04ebbb31b5798a4c54783e745a2",
+    "url": "/img/new_logo.png"
   },
   {
     "revision": "7a4ce7cc040fc1cb8176cde106e9232f",
@@ -146,10 +146,6 @@ self.__precacheManifest = [
   {
     "revision": "6be21e8a1b7d63048728851c6003e189",
     "url": "/img/sidebar-1.jpg"
-  },
-  {
-    "revision": "897b4cf909210560a84398d36da51983",
-    "url": "/img/sidebar-4.jpg"
   },
   {
     "revision": "9ebea76ee1225f00d882b21547a7b49f",
@@ -164,16 +160,20 @@ self.__precacheManifest = [
     "url": "/img/vue-logo.png"
   },
   {
-    "revision": "766609dd112808f079524bb1a0613b00",
-    "url": "/img/sidebar-6.jpg"
+    "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
+    "url": "/robots.txt"
   },
   {
     "revision": "44bf13a71a4db6e15913fe8af9296711",
     "url": "/img/tim_80x80.png"
   },
   {
-    "revision": "b6216d61c03e6ce0c9aea6ca7808f7ca",
-    "url": "/robots.txt"
+    "revision": "897b4cf909210560a84398d36da51983",
+    "url": "/img/sidebar-4.jpg"
+  },
+  {
+    "revision": "766609dd112808f079524bb1a0613b00",
+    "url": "/img/sidebar-6.jpg"
   },
   {
     "revision": "7b303432c4e6db7f8350362b72e42adc",

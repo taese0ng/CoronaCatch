@@ -9,7 +9,9 @@
                         <h4 class="card-title">Prevention</h4>
                         <p class="card-category">코로나19 예방수칙</p>
                     </template>
-                    <img v-for="prevention in this.getPrevention" :key="prevention.id" :src="prevention.image">
+                    <div class="image">
+                        <img v-for="prevention in this.getPrevention" :key="prevention.id" :src="prevention.image">
+                    </div>
                 </card>
             </div>
             </div>
@@ -29,5 +31,9 @@ import { mapGetters } from 'vuex'
 <style lang="scss" scoped>
 img {
     width: 100%;
+    max-width: 800px;
+}
+.image{
+    text-align: center;
 }
 </style>
