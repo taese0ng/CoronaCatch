@@ -17,7 +17,7 @@ export default {
     }),
     
     this.$socket.on("areaData",data=>{
-      this.setLocalData(data)
+      this.setLocalData(data.data)
       console.log(data)
     })
   },

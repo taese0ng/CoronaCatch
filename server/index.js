@@ -25,7 +25,10 @@ var accumulateData = [
   { date: "2/26", confirm: 1261, unlock: 24, die: 12 },
   { date: "2/27", confirm: 1766, unlock: 26, die: 13 },
   { date: "2/28", confirm: 2337, unlock: 27, die: 13 },
-  { date: "2/29", confirm: 3150, unlock: 28, die: 17 }
+  { date: "2/29", confirm: 3150, unlock: 28, die: 17 },
+  { date: "3/1", confirm: 3736, unlock: 30, die: 18 },
+  { date: "3/2", confirm: 4212, unlock: 31, die: 22 },
+  { date: "3/3", confirm: 4812, unlock: 34, die: 28 }
 ];
 
 const io = require("socket.io")(server);
@@ -60,50 +63,60 @@ const overlapCheck = function(dateKey) {
 
 getHtmlDomestic()
   .then(html => {
-    let list = [];
+    let list = {};
     const $ = cheeiro.load(html.data);
     const $bodyList = $("div.data_table table.num tbody").children("tr");
+    const time = $("div.timetable p.info").children("span").text();
+    list['time'] = time;
+    list['data'] = [];
     $bodyList.each(function(i, elem) {
       let area = $(this)
         .children("th")
         .text();
+
+      let increase_str = $(this)
+        .children("td")
+        .eq(0)
+        .text()
+        .replace(/\t/gi, "")
+        .replace(/,/gi, "");
+
       let confirm_str = $(this)
         .children("td")
         .eq(1)
         .text()
         .replace(/\t/gi, "")
         .replace(/,/gi, "");
-      let unlock_str = $(this)
+
+      let die_str = $(this)
         .children("td")
-        .eq(3)
+        .eq(2)
         .text()
         .replace(/\t/gi, "")
         .replace(/,/gi, "");
-      let die_str = $(this)
+      
+      let check_str = $(this)
         .children("td")
         .eq(4)
         .text()
         .replace(/\t/gi, "")
         .replace(/,/gi, "");
-      let check_str = $(this)
-        .children("td")
-        .eq(6)
-        .text()
-        .replace(/\t/gi, "")
-        .replace(/,/gi, "");
-
+     
+      let increase = parseInt(increase_str);
       let confirm = parseInt(confirm_str);
-      let unlock = parseInt(unlock_str);
-      let die = parseInt(die_str);
       let check = parseInt(check_str);
+      let die = parseInt(die_str);
+
 
       if (area != "검역")
-        list[i] = {
+        list['data'][i] = {
           area: area,
+          increase:increase,
           confirm: confirm,
-          unlock: unlock,
           die: die,
-          check: check
+          check: check,
+          
+
         };
     });
     const data = list;
@@ -111,7 +124,7 @@ getHtmlDomestic()
   })
   .then(res => {
     areaData = res;
-    log(res);
+    log(res.data);
   });
 
 //서버 실행 시 데이터 크롤링
@@ -220,50 +233,60 @@ const j = schedule.scheduleJob("1 1 * * * *", function() {
 
   getHtmlDomestic()
     .then(html => {
-      let list = [];
+      let list = {};
       const $ = cheeiro.load(html.data);
       const $bodyList = $("div.data_table table.num tbody").children("tr");
+      const time = $("div.timetable p.info").children("span").text();
+      list['time'] = time;
+      list['data'] = [];
       $bodyList.each(function(i, elem) {
         let area = $(this)
           .children("th")
           .text();
+
+        let increase_str = $(this)
+          .children("td")
+          .eq(0)
+          .text()
+          .replace(/\t/gi, "")
+          .replace(/,/gi, "");
+
         let confirm_str = $(this)
           .children("td")
           .eq(1)
           .text()
           .replace(/\t/gi, "")
           .replace(/,/gi, "");
-        let unlock_str = $(this)
+
+        let die_str = $(this)
           .children("td")
-          .eq(3)
+          .eq(2)
           .text()
           .replace(/\t/gi, "")
           .replace(/,/gi, "");
-        let die_str = $(this)
+        
+        let check_str = $(this)
           .children("td")
           .eq(4)
           .text()
           .replace(/\t/gi, "")
           .replace(/,/gi, "");
-        let check_str = $(this)
-          .children("td")
-          .eq(6)
-          .text()
-          .replace(/\t/gi, "")
-          .replace(/,/gi, "");
-
+      
+        let increase = parseInt(increase_str);
         let confirm = parseInt(confirm_str);
-        let unlock = parseInt(unlock_str);
-        let die = parseInt(die_str);
         let check = parseInt(check_str);
+        let die = parseInt(die_str);
+
 
         if (area != "검역")
-          list[i] = {
+          list['data'][i] = {
             area: area,
+            increase:increase,
             confirm: confirm,
-            unlock: unlock,
             die: die,
-            check: check
+            check: check,
+            
+
           };
       });
       const data = list;
