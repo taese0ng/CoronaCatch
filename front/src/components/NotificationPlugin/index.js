@@ -1,19 +1,8 @@
-import Notifications from './Notifications.vue';
+import Notifications from "./Notifications.vue";
 
 const NotificationStore = {
   state: [], // here the notifications will be added
-  settings: {
-    overlap: false,
-    verticalAlign: 'top',
-    horizontalAlign: 'right',
-    type: 'info',
-    timeout: 5000,
-    closeOnClick: true,
-    showClose: true
-  },
-  setOptions(options) {
-    this.settings = Object.assign(this.settings, options);
-  },
+
   removeNotification(timestamp) {
     const indexToDelete = this.state.findIndex(n => n.timestamp === timestamp);
     if (indexToDelete !== -1) {
@@ -21,14 +10,10 @@ const NotificationStore = {
     }
   },
   addNotification(notification) {
-    if (typeof notification === 'string' || notification instanceof String) {
-      notification = { message: notification };
-    }
     notification.timestamp = new Date();
     notification.timestamp.setMilliseconds(
       notification.timestamp.getMilliseconds() + this.state.length
     );
-    notification = Object.assign({}, this.settings, notification);
     this.state.push(notification);
   },
   notify(notification) {
@@ -42,11 +27,13 @@ const NotificationStore = {
   }
 };
 
-const NotificationsPlugin = {
-  install(Vue, options) {
-    let app = new Vue({
-      data: {
-        notificationStore: NotificationStore
+var NotificationsPlugin = {
+  install(Vue) {
+    Vue.mixin({
+      data() {
+        return {
+          notificationStore: NotificationStore
+        };
       },
       methods: {
         notify(notification) {
@@ -54,12 +41,17 @@ const NotificationsPlugin = {
         }
       }
     });
-    Vue.prototype.$notify = app.notify;
-    Vue.prototype.$notifications = app.notificationStore;
-    Vue.component('Notifications', Notifications);
-    if (options) {
-      NotificationStore.setOptions(options);
-    }
+    Object.defineProperty(Vue.prototype, "$notify", {
+      get() {
+        return this.$root.notify;
+      }
+    });
+    Object.defineProperty(Vue.prototype, "$notifications", {
+      get() {
+        return this.$root.notificationStore;
+      }
+    });
+    Vue.component("Notifications", Notifications);
   }
 };
 

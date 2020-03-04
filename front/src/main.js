@@ -1,56 +1,64 @@
-/*!
+// =========================================================
+// * Vue Material Dashboard - v1.3.2
+// =========================================================
+//
+// * Product Page: https://www.creative-tim.com/product/vue-material-dashboard
+// * Copyright 2019 Creative Tim (https://www.creative-tim.com)
+// * Licensed under MIT (https://github.com/creativetimofficial/vue-material-dashboard/blob/master/LICENSE.md)
+//
+// * Coded by Creative Tim
+//
+// =========================================================
+//
+// * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
- =========================================================
- * Vue Light Bootstrap Dashboard - v2.0.0 (Bootstrap 4)
- =========================================================
-
- * Product Page: http://www.creative-tim.com/product/light-bootstrap-dashboard
- * Copyright 2019 Creative Tim (http://www.creative-tim.com)
- * Licensed under MIT (https://github.com/creativetimofficial/light-bootstrap-dashboard/blob/master/LICENSE.md)
-
- =========================================================
-
- * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
- */
-import Vue from 'vue'
-import VueRouter from 'vue-router'
-import App from './App.vue'
-
-// LightBootstrap plugin
-import LightBootstrap from './light-bootstrap-main'
+// The Vue build version to load with the `import` command
+// (runtime-only or standalone) has been set in webpack.base.conf with an alias.
+import Vue from "vue";
+import VueRouter from "vue-router";
+import App from "./App";
 
 // router setup
-import routes from './routes/routes'
-import { store } from "./store/store";
-import './registerServiceWorker'
-import io from "socket.io-client";
-import VueAnimateNumber from 'vue-animate-number';
+import routes from "./routes/routes";
 
-Vue.prototype.$socket = io("SERVER_IP");
-// plugin setup
-Vue.use(VueAnimateNumber)
-Vue.use(VueRouter)
-Vue.use(LightBootstrap)
+// Plugins
+import GlobalComponents from "./globalComponents";
+import GlobalDirectives from "./globalDirectives";
+import Notifications from "./components/NotificationPlugin";
+import VueAnimateNumber from "vue-animate-number";
+import io from "socket.io-client";
+import { store } from "./store/store";
+
+// MaterialDashboard plugin
+import MaterialDashboard from "./material-dashboard";
+
+import Chartist from "chartist";
 
 // configure router
 const router = new VueRouter({
-  mode: 'history',
+  mode: "history",
   routes, // short for routes: routes
-  linkActiveClass: 'nav-item active',
-  scrollBehavior: (to) => {
-    if (to.hash) {
-      return {selector: to.hash}
-    } else {
-      return { x: 0, y: 0 }
-    }
-  }
-})
+  linkExactActiveClass: "nav-item active"
+});
+
+Vue.prototype.$socket = io("SERVER_IP");
+
+Vue.prototype.$Chartist = Chartist;
+
+Vue.use(VueRouter);
+Vue.use(MaterialDashboard);
+Vue.use(GlobalComponents);
+Vue.use(GlobalDirectives);
+Vue.use(Notifications);
+Vue.use(VueAnimateNumber);
 
 /* eslint-disable no-new */
 new Vue({
-  el: '#app',
+  el: "#app",
   render: h => h(App),
   router,
+  data: {
+    Chartist: Chartist
+  },
   store
-})
+});

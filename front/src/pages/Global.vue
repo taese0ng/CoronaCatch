@@ -1,80 +1,60 @@
 <template>
   <div class="content">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-12">
-          <card class="strpied-tabled-with-hover"
-                body-classes="table-full-width table-responsive"
-          >
-            <template slot="header">
-              <h4 class="card-title">국가별 코로나 현황</h4>
-              <p class="card-category">글로벌 코로나 순위</p>
-            </template>
-            <l-table class="table-hover table-striped"
-                     :columns="table.columns"
-                     :data="this.getForeignData">
-            </l-table>
-          </card>
-
-        </div>
-
-        <!-- <div class="col-12">
-          <card class="card-plain">
-            <template slot="header">
-              <h4 class="card-title">Table on Plain Background</h4>
-              <p class="card-category">Here is a subtitle for this table</p>
-            </template>
-            <div class="table-responsive">
-              <l-table class="table-hover"
-                       :columns="table2.columns"
-                       :data="table2.data">
-              </l-table>
-            </div>
-          </card>
-        </div>
-
-        <div class="col-12">
-          <card class="strpied-tabled-with-hover"
-                body-classes="table-full-width table-responsive"
-          >
-            <template slot="header">
-              <h4 class="card-title">Small table</h4>
-              <p class="card-category">Here is a subtitle for this table</p>
-            </template>
-            <l-table class="table-hover table-striped table-sm"
-                     :columns="table1.columns"
-                     :data="table1.data">
-            </l-table>
-          </card>
-
-        </div> -->
-
+    <div class="md-layout">
+      <div
+        class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
+      >
+        <md-card>
+          <md-card-header data-background-color="green">
+            <h4 class="title">국가별 코로나 현황</h4>
+            <p class="category">글로벌 코로나 확진자 순위</p>
+          </md-card-header>
+          <md-card-content>
+            <md-table v-model="this.getForeignData" table-header-color="green">
+              <md-table-row slot="md-table-row" slot-scope="{ item }">
+                <md-table-cell md-label="No.">{{ item.id }}</md-table-cell>
+                <md-table-cell md-label="국가">{{
+                  item.country
+                }}</md-table-cell>
+                <md-table-cell md-label="확진자">{{
+                  item.confirm
+                }}</md-table-cell>
+                <md-table-cell md-label="사망자">{{ item.die }}</md-table-cell>
+              </md-table-row>
+            </md-table>
+            <!-- <simple-table table-header-color="green"></simple-table> -->
+          </md-card-content>
+        </md-card>
       </div>
+
+      <!-- <div
+        class="md-layout-item md-medium-size-100 md-xsmall-size-100 md-size-100"
+      >
+        <md-card class="md-card-plain">
+          <md-card-header data-background-color="green">
+            <h4 class="title">Table on Plain Background</h4>
+            <p class="category">Here is a subtitle for this table</p>
+          </md-card-header>
+          <md-card-content>
+            <ordered-table></ordered-table>
+          </md-card-content>
+        </md-card>
+      </div> -->
     </div>
   </div>
 </template>
+
 <script>
-  import LTable from 'src/components/Table.vue'
-  import Card from 'src/components/Cards/Card.vue'
-  import { mapGetters } from 'vuex'
-  const tableColumns = ['id', '국가', '확진자', '사망자']
-  
-  export default {
-    components: {
-      LTable,
-      Card
-    },
-    computed:{
-      ...mapGetters(['getForeignData'])
-    },
-    data () {
-      return {
-        table: {
-          columns: [...tableColumns]
-        }
-      }
-    }
+// import { SimpleTable, OrderedTable } from "@/components";
+import { mapGetters } from "vuex";
+
+export default {
+  components: {
+    // OrderedTable,
+    // SimpleTable
+  },
+  computed: {
+    ...mapGetters(["getForeignData"])
   }
+};
 </script>
-<style>
-</style>
