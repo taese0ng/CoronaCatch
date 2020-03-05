@@ -7,11 +7,13 @@ import { mapMutations } from "vuex";
 export default {
   created() {
     this.$socket.on("coronaData", data => {
+      this.resetLocalStorage();
       this.setCoronaDay(data.accumulateData);
       this.setData(data.coronaData);
       this.setForeignData(data.foreignData);
     }),
       this.$socket.on("areaData", data => {
+        this.resetLocalStorage();
         this.setLocalData(data);
       });
   },
@@ -20,7 +22,8 @@ export default {
       "setData",
       "setCoronaDay",
       "setForeignData",
-      "setLocalData"
+      "setLocalData",
+      "resetLocalStorage"
     ])
   }
 };

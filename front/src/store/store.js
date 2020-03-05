@@ -6,7 +6,7 @@ Vue.use(Vuex);
 const badMutations = ["someMutationThatGetsCalledTooOften"];
 
 const vuexLocalStorage = new VuexPersist({
-  key: "test",
+  key: "coronaCatch",
   storage: window.localStorage,
   filter: mutation => badMutations.indexOf(mutation.type) === -1 //Boolean
   /*
@@ -37,7 +37,7 @@ export const store = new Vuex.Store({
         low: 0,
         high: "", // creative tim: we recommend you to set the high sa the biggest value + something for a better look
         chartPadding: {
-          top: 0,
+          top: 10,
           right: 5,
           bottom: -10,
           left: 20
@@ -48,7 +48,7 @@ export const store = new Vuex.Store({
         low: 0,
         high: "", // creative tim: we recommend you to set the high sa the biggest value + something for a better look
         chartPadding: {
-          top: 0,
+          top: 10,
           right: 5,
           bottom: -10,
           left: 20
@@ -168,6 +168,9 @@ export const store = new Vuex.Store({
   },
   // Method
   mutations: {
+    resetLocalStorage() {
+      localStorage.removeItem("coronaCatch");
+    },
     setData(state, data) {
       state.corona_data = data;
     },
@@ -190,11 +193,21 @@ export const store = new Vuex.Store({
 
       maxNum.push(Math.max.apply(null, state.localCoronaChart.data2.series[0]));
       maxNum.push(Math.max.apply(null, state.localCoronaChart.data2.series[1]));
-      state.localCoronaChart.options.high = Math.max.apply(
-        null,
-        state.localCoronaChart.data.series[0]
-      );
-      state.localCoronaChart.options2.high = Math.max.apply(null, maxNum);
+      var high = Math.max.apply(null, state.localCoronaChart.data.series[0]);
+      var num = 1;
+      while (high / 10 > 1) {
+        num = num * 10;
+        high = high / 10;
+      }
+      state.localCoronaChart.options.high =
+        Math.max.apply(null, state.localCoronaChart.data.series[0]) + num;
+      high = Math.max.apply(null, maxNum);
+      num = 1;
+      while (high / 10 > 1) {
+        num = num * 10;
+        high = high / 10;
+      }
+      state.localCoronaChart.options2.high = Math.max.apply(null, maxNum) + num;
     },
     setForeignData(state, data) {
       var foreign = data;

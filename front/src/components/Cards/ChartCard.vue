@@ -77,12 +77,12 @@ export default {
         this.chartOptions
       );
       this.$emit("initialized", this.chart);
-      if (this.chartType === "Line") {
-        this.animateLineChart();
-      }
-      if (this.chartType === "Bar") {
-        this.animateBarChart();
-      }
+      // if (this.chartType === "Line") {
+      //   this.animateLineChart();
+      // }
+      // if (this.chartType === "Bar") {
+      //   this.animateBarChart();
+      // }
     },
     /***
      * Assigns a random id to the chart
