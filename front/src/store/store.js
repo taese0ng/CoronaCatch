@@ -20,6 +20,8 @@ const vuexLocalStorage = new VuexPersist({
 export const store = new Vuex.Store({
   // state
   state: {
+    mapWidth: 0,
+    isMobile: 0,
     corona_data: [],
     date: 0,
     corona_day: [],
@@ -131,7 +133,7 @@ export const store = new Vuex.Store({
       }
       data.push({
         id: i,
-        country: "총합",
+        country: "ì´�í•©",
         confirm: foreign[0].confirm,
         die: foreign[0].die
       });
@@ -169,7 +171,9 @@ export const store = new Vuex.Store({
   // Method
   mutations: {
     resetLocalStorage() {
-      localStorage.removeItem("coronaCatch");
+      console.log("reset");
+      localStorage.clear();
+      //localStorage.removeItem("coronaCatch");
     },
     setData(state, data) {
       state.corona_data = data;
@@ -179,16 +183,31 @@ export const store = new Vuex.Store({
       var index = state.corona_day.length - 7;
       var maxNum = [];
       for (var i = 0; i < 7; i++) {
-        state.localCoronaChart.data.labels[i] =
-          state.corona_day[index + i].date;
-        state.localCoronaChart.data2.labels[i] =
-          state.corona_day[index + i].date;
-        state.localCoronaChart.data.series[0][i] =
-          state.corona_day[index + i].confirm;
-        state.localCoronaChart.data2.series[0][i] =
-          state.corona_day[index + i].unlock;
-        state.localCoronaChart.data2.series[1][i] =
-          state.corona_day[index + i].die;
+        Vue.set(
+          state.localCoronaChart.data.labels,
+          i,
+          state.corona_day[index + i].date
+        );
+        Vue.set(
+          state.localCoronaChart.data2.labels,
+          i,
+          state.corona_day[index + i].date
+        );
+        Vue.set(
+          state.localCoronaChart.data.series[0],
+          i,
+          state.corona_day[index + i].confirm
+        );
+        Vue.set(
+          state.localCoronaChart.data2.series[0],
+          i,
+          state.corona_day[index + i].unlock
+        );
+        Vue.set(
+          state.localCoronaChart.data2.series[1],
+          i,
+          state.corona_day[index + i].die
+        );
       }
 
       maxNum.push(Math.max.apply(null, state.localCoronaChart.data2.series[0]));
@@ -211,7 +230,7 @@ export const store = new Vuex.Store({
     },
     setForeignData(state, data) {
       var foreign = data;
-      var korea = { country: "한국", confirm: 0, die: 0 };
+      var korea = { country: "한국­", confirm: 0, die: 0 };
       korea.confirm = String(state.corona_data[0].data);
       korea.die = String(state.corona_data[2].data);
       foreign.push(korea);
@@ -222,8 +241,16 @@ export const store = new Vuex.Store({
       });
 
       for (var i = 0; i < 7; i++) {
-        state.foreignCoronaChart.data2.labels[i] = foreign[i + 2].country;
-        state.foreignCoronaChart.data2.series[0][i] = foreign[i + 2].die;
+        Vue.set(
+          state.foreignCoronaChart.data2.labels,
+          i,
+          foreign[i + 2].country
+        );
+        Vue.set(
+          state.foreignCoronaChart.data2.series[0],
+          i,
+          foreign[i + 2].die
+        );
       }
 
       sortingField = "confirm";
@@ -232,9 +259,17 @@ export const store = new Vuex.Store({
       });
       state.foreignData = foreign;
 
-      for (var i = 0; i < 7; i++) {
-        state.foreignCoronaChart.data.labels[i] = foreign[i + 2].country;
-        state.foreignCoronaChart.data.series[0][i] = foreign[i + 2].confirm;
+      for (i = 0; i < 7; i++) {
+        Vue.set(
+          state.foreignCoronaChart.data.labels,
+          i,
+          foreign[i + 2].country
+        );
+        Vue.set(
+          state.foreignCoronaChart.data.series[0],
+          i,
+          foreign[i + 2].confirm
+        );
       }
     },
     setLocalData(state, data) {
@@ -245,6 +280,15 @@ export const store = new Vuex.Store({
       });
       state.localData.time = data.time;
       state.localData.data = local;
+    },
+    setWidth(state, data) {
+      if (window.innerWidth > 991) {
+        state.mapWidth = data - 320;
+        state.isMobile = 100;
+      } else {
+        state.mapWidth = data;
+        state.isMobile = -100;
+      }
     }
   },
   // Actions

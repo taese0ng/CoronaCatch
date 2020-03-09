@@ -5,8 +5,17 @@
 <script>
 import { mapMutations } from "vuex";
 export default {
+  beforeDestroy() {
+    console.log("before");
+    this.resetLocalStorage();
+  },
+  destroyed() {
+    console.log("destroyed");
+    this.resetLocalStorage();
+  },
   created() {
     this.$socket.on("coronaData", data => {
+      console.log("start", data.coronaData[0].data);
       this.resetLocalStorage();
       this.setCoronaDay(data.accumulateData);
       this.setData(data.coronaData);

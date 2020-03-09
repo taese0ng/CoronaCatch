@@ -5,7 +5,8 @@ import Maps from "@/pages/Maps.vue";
 import Global from "@/pages/Global.vue";
 import Local from "@/pages/Local.vue";
 import Preventation from "@/pages/Preventation.vue";
-import About from "@/pages/About";
+import About from "@/pages/About.vue";
+import Test from "@/pages/test.vue";
 
 const routes = [
   {
@@ -34,7 +35,7 @@ const routes = [
         meta: {
           hideFooter: true
         },
-        component: Maps
+        component: Test
       },
       {
         path: "preventation",

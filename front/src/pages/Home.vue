@@ -12,7 +12,11 @@
           <template slot="content">
             <p class="title">확진자</p>
             <h3 class="title">
-              <animate-number from="0" :to="this.getData[0].data" />
+              <animated-number
+                :value="this.getData[0].data"
+                :formatValue="formatToPrice"
+                :duration="500"
+              />
               <small> 명</small>
             </h3>
           </template>
@@ -36,7 +40,11 @@
           <template slot="content">
             <p class="title">사망자</p>
             <h3 class="title">
-              <animate-number from="0" :to="this.getData[2].data" />
+              <animated-number
+                :value="this.getData[2].data"
+                :formatValue="formatToPrice"
+                :duration="500"
+              />
               <small> 명</small>
             </h3>
           </template>
@@ -60,7 +68,11 @@
           <template slot="content">
             <p class="title">확진환자 격리해제</p>
             <h3 class="title">
-              <animate-number from="0" :to="this.getData[1].data" />
+              <animated-number
+                :value="this.getData[1].data"
+                :formatValue="formatToPrice"
+                :duration="500"
+              />
               <small> 명</small>
             </h3>
           </template>
@@ -84,7 +96,11 @@
           <template slot="content">
             <p class="title">검사진행</p>
             <h3 class="title">
-              <animate-number from="0" :to="this.getData[3].data" />
+              <animated-number
+                :value="this.getData[3].data"
+                :formatValue="formatToPrice"
+                :duration="500"
+              />
               <small> 명</small>
             </h3>
           </template>
@@ -209,17 +225,30 @@
         </chart-card>
       </div>
     </div>
+    <div style=" width: 800px; height: 100px">
+      <iframe
+        width="728"
+        height="90"
+        allowtransparency="true"
+        src="https://tab2.clickmon.co.kr/pop/wp_ad_728.php?PopAd=CM_M_1003067%7C%5E%7CCM_A_1070545%7C%5E%7CAdver_M_1046207&mon_rf=http://coronacatch.com"
+        frameborder="0"
+        scrolling="no"
+      ></iframe>
+    </div>
   </div>
 </template>
 
 <script>
 import { StatsCard, ChartCard } from "@/components";
 import { mapGetters } from "vuex";
+import AnimatedNumber from "animated-number-vue";
+//https://www.npmjs.com/package/animated-number-vue
 
 export default {
   components: {
     StatsCard,
-    ChartCard
+    ChartCard,
+    AnimatedNumber
   },
   computed: {
     ...mapGetters([
@@ -259,6 +288,11 @@ export default {
         ]
       }
     };
+  },
+  methods: {
+    formatToPrice(value) {
+      return `${value.toFixed(0)}`;
+    }
   }
 };
 </script>

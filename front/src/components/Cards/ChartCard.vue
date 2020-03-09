@@ -58,6 +58,15 @@ export default {
       default: ""
     }
   },
+  watch: {
+    chartData: {
+      handler() {
+        console.log("change");
+        this.initChart();
+      },
+      deep: true
+    }
+  },
   data() {
     return {
       chartId: "no-id",

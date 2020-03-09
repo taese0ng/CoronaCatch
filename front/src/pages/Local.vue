@@ -22,7 +22,7 @@
                   item.confirm
                 }}</md-table-cell>
                 <md-table-cell md-label="사망자">{{ item.die }}</md-table-cell>
-                <md-table-cell md-label="일일검사수 (명)">{{
+                <md-table-cell md-label="격리해제수">{{
                   item.check
                 }}</md-table-cell>
                 <md-table-cell md-label="전일대비확진환자증감">{{

@@ -1,5 +1,5 @@
 <template>
-  <md-toolbar md-elevation="0" class="md-transparent">
+  <md-toolbar md-elevation="0" class="md-transparent" id="test">
     <div class="md-toolbar-row">
       <div class="md-toolbar-section-start">
         <h3 class="md-title">{{ $route.name }}</h3>
@@ -15,7 +15,8 @@
           <span class="icon-bar"></span>
         </md-button>
       </div>
-        <!-- <div class="md-collapse">
+      <resize-observer @notify="handleResize" />
+      <!-- <div class="md-collapse">
           <div class="md-autocomplete">
             <md-autocomplete
               class="search"
@@ -71,7 +72,12 @@
 </template>
 
 <script>
+import { mapMutations } from "vuex";
 export default {
+  mounted() {
+    var t = document.getElementById("test");
+    this.setWidth(t.offsetWidth);
+  },
   data() {
     return {
       selectedEmployee: null,
@@ -88,8 +94,13 @@ export default {
     };
   },
   methods: {
+    ...mapMutations(["setWidth"]),
     toggleSidebar() {
       this.$sidebar.displaySidebar(!this.$sidebar.showSidebar);
+    },
+    handleResize(event) {
+      var t = document.getElementById("test");
+      this.setWidth(t.offsetWidth);
     }
   }
 };
