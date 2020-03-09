@@ -110,14 +110,14 @@ const getLocalData = function(html){
 
       let die_str = $(this)
         .children("td")
-        .eq(2)
+        .eq(3)
         .text()
         .replace(/\t/gi, "")
         .replace(/,/gi, "");
       
       let check_str = $(this)
         .children("td")
-        .eq(4)
+        .eq(2)
         .text()
         .replace(/\t/gi, "")
         .replace(/,/gi, "");
@@ -268,8 +268,8 @@ getHtmlDomestic()
   })
   .then(res =>{
     areaData = res;
-    // log("국내별");
-    // log(areaData);
+    log("국내별");
+    log(areaData);
   })
 
 getHtml()
@@ -280,10 +280,10 @@ getHtml()
   .then(res => {
     coronaData = res.domestic;
     foreignData = res.foreign;
-    // log("국가별");
+    log("국가별");
     log(res);
-    // log("누적");
-    // log(accumulateData);
+    log("누적");
+    log(accumulateData);
     return res;
   });
 
