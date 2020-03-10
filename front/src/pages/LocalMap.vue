@@ -10,8 +10,10 @@
             <p class="category">코로나19 국내 현황 지도</p>
           </md-card-header>
           <md-card-content>
-            <img :src="this.getLocalMap" />
-            <h4>출처 - 네이버 -</h4>
+            <div class="image">
+              <img :src="this.getLocalMap" />
+              <h4>출처 - 네이버 -</h4>
+            </div>
           </md-card-content>
         </md-card>
       </div>
@@ -31,5 +33,12 @@ export default {
 <style scoped>
 * {
   font-weight: 400;
+}
+img {
+  width: 100%;
+  max-width: 800px;
+}
+.image {
+  text-align: center;
 }
 </style>
