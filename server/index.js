@@ -234,7 +234,7 @@ const getGlobalData = function (html) {
 
   $bodyList.each(function (i, elem) {
 
-    if (i > 7) {
+    if (i > 5) {
       let title = $(this)
         .children("th")
         .text();
@@ -295,7 +295,7 @@ const getGlobalData = function (html) {
 
         die = parseInt(die);
 
-        countryList[i - 8] = {
+        countryList[i - 6] = {
           country: country,
           confirm: confirm,
           die: die
@@ -303,7 +303,7 @@ const getGlobalData = function (html) {
       }
       else {
         temp = parseInt(temp);
-        countryList[i - 8] = {
+        countryList[i - 6] = {
           country: country,
           confirm: temp,
           die: 0
