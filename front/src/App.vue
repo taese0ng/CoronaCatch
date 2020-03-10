@@ -21,21 +21,19 @@ export default {
       this.resetLocalStorage();
       this.setCoronaDay(data.accumulateData);
       this.setData(data.coronaData);
-      
+      console.log(data.coronaData);
     }),
-    
-    this.$socket.on("localData", data => {
-      this.resetLocalStorage();
-      // console.log(data);
-      this.setLocalData(data);
-    });
-    
+      this.$socket.on("localData", data => {
+        this.resetLocalStorage();
+        console.log("local",data);
+        this.setLocalData(data);
+      });
+
     this.$socket.on("foreignData", data => {
       this.resetLocalStorage();
-      // console.log(data);
+      console.log(data);
       this.setForeignData(data);
     });
-    
   },
   methods: {
     ...mapMutations([

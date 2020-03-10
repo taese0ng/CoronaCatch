@@ -32,9 +32,6 @@ const routes = [
       {
         path: "maps",
         name: "Maps",
-        meta: {
-          hideFooter: true
-        },
         component: Test
       },
       {

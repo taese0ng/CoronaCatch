@@ -41,7 +41,7 @@
             <p class="title">사망자</p>
             <h3 class="title">
               <animated-number
-                :value="this.getData[2].data"
+                :value="this.getData[3].data"
                 :formatValue="formatToPrice"
                 :duration="500"
               />
@@ -97,7 +97,7 @@
             <p class="title">검사진행</p>
             <h3 class="title">
               <animated-number
-                :value="this.getData[3].data"
+                :value="this.getData[2].data"
                 :formatValue="formatToPrice"
                 :duration="500"
               />
@@ -224,16 +224,6 @@
           </template>
         </chart-card>
       </div>
-    </div>
-    <div style=" width: 800px; height: 100px">
-      <iframe
-        width="728"
-        height="90"
-        allowtransparency="true"
-        src="https://tab2.clickmon.co.kr/pop/wp_ad_728.php?PopAd=CM_M_1003067%7C%5E%7CCM_A_1070545%7C%5E%7CAdver_M_1046207&mon_rf=http://coronacatch.com"
-        frameborder="0"
-        scrolling="no"
-      ></iframe>
     </div>
   </div>
 </template>

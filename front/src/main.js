@@ -42,7 +42,7 @@ const router = new VueRouter({
   linkExactActiveClass: "nav-item active"
 });
 
-Vue.prototype.$socket = io("SERVER_IP");
+Vue.prototype.$socket = io("49.50.166.64:80");
 
 Vue.prototype.$Chartist = Chartist;
 

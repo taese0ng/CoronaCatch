@@ -33,7 +33,16 @@
       <top-navbar></top-navbar>
 
       <dashboard-content> </dashboard-content>
-
+      <div style=" width: 800px; height: 100px">
+        <iframe
+          width="728"
+          height="90"
+          allowtransparency="true"
+          src="https://tab2.clickmon.co.kr/pop/wp_ad_728.php?PopAd=CM_M_1003067%7C%5E%7CCM_A_1070545%7C%5E%7CAdver_M_1046207&mon_rf=http://coronacatch.com"
+          frameborder="0"
+          scrolling="no"
+        ></iframe>
+      </div>
       <content-footer v-if="!$route.meta.hideFooter"></content-footer>
     </div>
   </div>

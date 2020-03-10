@@ -6,7 +6,7 @@ Vue.use(Vuex);
 const badMutations = ["someMutationThatGetsCalledTooOften"];
 
 const vuexLocalStorage = new VuexPersist({
-  key: "coronaCatch",
+  key: "coronaCatch!",
   storage: window.localStorage,
   filter: mutation => badMutations.indexOf(mutation.type) === -1 //Boolean
   /*
@@ -133,7 +133,7 @@ export const store = new Vuex.Store({
       }
       data.push({
         id: i,
-        country: "ì´�í•©",
+        country: "합계",
         confirm: foreign[0].confirm,
         die: foreign[0].die
       });
@@ -230,9 +230,9 @@ export const store = new Vuex.Store({
     },
     setForeignData(state, data) {
       var foreign = data;
-      var korea = { country: "한국­", confirm: 0, die: 0 };
+      var korea = { country: "한국", confirm: 0, die: 0 };
       korea.confirm = String(state.corona_data[0].data);
-      korea.die = String(state.corona_data[2].data);
+      korea.die = String(state.corona_data[3].data);
       foreign.push(korea);
 
       var sortingField = "die";
@@ -240,7 +240,7 @@ export const store = new Vuex.Store({
         return b[sortingField] - a[sortingField];
       });
 
-      for (var i = 0; i < 7; i++) {
+      for (var i = 0; i < 6; i++) {
         Vue.set(
           state.foreignCoronaChart.data2.labels,
           i,
@@ -259,7 +259,7 @@ export const store = new Vuex.Store({
       });
       state.foreignData = foreign;
 
-      for (i = 0; i < 7; i++) {
+      for (i = 0; i < 6; i++) {
         Vue.set(
           state.foreignCoronaChart.data.labels,
           i,
