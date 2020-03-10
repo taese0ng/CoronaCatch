@@ -27,6 +27,16 @@
         <md-icon>star</md-icon>
         <p>About</p>
       </sidebar-link>
+      <div id="ad">
+        <iframe
+          width="200"
+          height="200"
+          allowtransparency="true"
+          src="http://tab2.clickmon.co.kr/pop/wp_ad_200.php?PopAd=CM_M_1003067%7C%5E%7CCM_A_1070545%7C%5E%7CAdver_M_1046207&mon_rf=http://coronacatch.com"
+          frameborder="0"
+          scrolling="no"
+        ></iframe>
+      </div>
     </side-bar>
 
     <div class="main-panel">
@@ -47,7 +57,12 @@
     </div>
   </div>
 </template>
-<style lang="scss"></style>
+<style lang="scss">
+#ad {
+  position: absolute;
+  bottom: 0px;
+}
+</style>
 <script>
 import TopNavbar from "./TopNavbar.vue";
 import ContentFooter from "./ContentFooter.vue";
