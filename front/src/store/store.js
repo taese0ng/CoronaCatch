@@ -20,6 +20,7 @@ const vuexLocalStorage = new VuexPersist({
 export const store = new Vuex.Store({
   // state
   state: {
+    localMap: "",
     mapWidth: 0,
     isMobile: 0,
     corona_data: [],
@@ -166,12 +167,15 @@ export const store = new Vuex.Store({
     },
     getPrevention(state) {
       return state.prevention_img;
+    },
+    getLocalMap(state) {
+      return state.localMap;
     }
   },
   // Method
   mutations: {
     resetLocalStorage() {
-      console.log("reset");
+      //console.log("reset");
       localStorage.clear();
       //localStorage.removeItem("coronaCatch");
     },
@@ -289,6 +293,10 @@ export const store = new Vuex.Store({
         state.mapWidth = data;
         state.isMobile = -100;
       }
+    },
+    setLocalMap(state, data) {
+      state.localMap = data;
+      //console.log(state.localMap);
     }
   },
   // Actions

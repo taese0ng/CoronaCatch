@@ -11,6 +11,7 @@ const server = app.use(history()).listen(80, function () {
 });
 const schedule = require("node-schedule");
 
+var localImage;
 var coronaData = [];
 var foreignData = [];
 var areaData = [];
@@ -87,11 +88,34 @@ const getHtmlLocal = async () => {
   }
 };
 
+// 이미지가 있는 링크
+const getHtmlImage = async () => {
+  try {
+    return await axios.get(
+      "https://terms.naver.com/entry.nhn?docId=5912275&cid=43667&categoryId=43667"
+    );
+  } catch (err) {
+    console.error(err);
+  }
+}
+
 // 1시간마다 갱신하기 때문에 중복제외 검사
 const overlapCheck = function (dateKey) {
   if (accumulateData[accumulateData.length - 1]["date"] != dateKey) return true;
   return false;
 };
+
+
+// 네이버 이미지 가져오는 방법 정의
+const getImageSrc = function (html) {
+  let src;
+  const $ = cheeiro.load(html.data);
+  const $bodyImg = $("div.se_image div.se_sectionArea div.se_editArea div.se_viewArea").children('a.se_mediaArea');
+
+  src = $bodyImg.find("#SEDOC-1583835667114-917851683_image_6_img").attr('data-src');
+
+  return src;
+}
 
 // 지역별 데이터 가져오는 방법 정의
 const getLocalData = function (html) {
@@ -166,7 +190,7 @@ const getDomesticData = function (html) {
 
   $bodyList.each(function (i, elem) {
     let title = $(this).children("span.txt_sort").text();
-    let data_str = $(this).children("strong.num").text().replace(/,/,"").replace(/"/,"");
+    let data_str = $(this).children("strong.num").text().replace(/,/, "").replace(/"/, "");
     let data = parseInt(data_str);
     if (i == 0) {
 
@@ -198,21 +222,20 @@ const getDomesticData = function (html) {
   });
 
   // 저장 중복 검사
-  if(!overlap){
+  if (!overlap) {
 
     const addDate = [];
-    addDate.push(accumulateData[accumulateData.length-1]);
+    addDate.push(accumulateData[accumulateData.length - 1]);
     csvWriter.writeRecords(addDate)
-    .then(()=>{
-      log("CSV 파일에 추가 성공!");
-    });
+      .then(() => {
+        log("CSV 파일에 추가 성공!");
+      });
   }
-  if(updateCheck)
-  {
+  if (updateCheck) {
     csvUpdateWriter.writeRecords(accumulateData)
-    .then(()=>{
-      log("CSV 파일 다시 저장 성공!")
-    });
+      .then(() => {
+        log("CSV 파일 다시 저장 성공!")
+      });
   }
 
   updateCheck = false;
@@ -247,41 +270,8 @@ const getGlobalData = function (html) {
         .text();
       data_str = data_str.replace(/,/gi, "").replace(/명/gi, "");
 
-      // //국내 데이터
-      // if (i in [0, 1, 2, 3]) {
-      //   data_str = data_str.replace(/\s/gi,"");
-      //   let data = parseInt(data_str);
-
-      //   if (i == 0) {
-
-      //     if (overlapCheck(dateKey)){
-      //       updateCheck = false;
-      //       overlap = false;
-      //       accumulateData[accumulateData.length] = {
-      //         date: dateKey,
-      //         confirm: data_str
-      //       };
-      //     }
-      //     else 
-      //     {
-      //       overlap = true;
-      //       if(accumulateData[accumulateData.length - 1]["confirm"] != data_str)
-      //         updateCheck = true;
-      //       accumulateData[accumulateData.length - 1]["confirm"] = data_str;
-      //     }
-      //   } 
-      //   else if (i == 1)
-      //     accumulateData[accumulateData.length - 1]["unlock"] = data_str;
-      //   else if (i == 2)
-      //     accumulateData[accumulateData.length - 1]["die"] = data_str;
-
-      //   ulList[i] = {
-      //         title: title,
-      //         data: data
-      //       };
-      // }
-
       //국외 데이터
+
       let temp = data_str
         .replace(country, "")
         .replace(/\(/gi, "")
@@ -319,15 +309,28 @@ const getGlobalData = function (html) {
 }
 
 //서버 시작시 한번 동작
+
+getHtmlImage()
+  .then(html => {
+    let src = getImageSrc(html);
+    // log(html);
+    return src;
+  })
+  .then(res => {
+    localImage = res;
+    // log(res);
+  });
+
 getHtmlLocal()
   .then(html => {
     let res = getLocalData(html);
+
     return res
   })
   .then(res => {
     areaData = res;
-    log("국내별");
-    log(areaData);
+    // log("국내별");
+    // log(areaData);
   })
 
 getHtmlForeign()
@@ -337,23 +340,23 @@ getHtmlForeign()
   })
   .then(res => {
     foreignData = res.foreign;
-    log("국외");
-    log(res);
+    // log("국외");
+    // log(res);
 
     return res;
   });
 
 getHtmlDomestic()
-  .then(html =>{
+  .then(html => {
     let res = getDomesticData(html);
     return res;
   })
-  .then(res =>{
+  .then(res => {
     coronaData = res.domestic;
-    log("국내");
-    log(res);
-    log("누적");
-    log(accumulateData);
+    // log("국내");
+    // log(res);
+    // log("누적");
+    // log(accumulateData);
   });
 
 
@@ -361,30 +364,42 @@ getHtmlDomestic()
 // 매시간(테스트용 1분마다)마다 데이터 크롤링 후 프론트로 전송
 const j = schedule.scheduleJob("1 1 * * * *", function () {
 
+  getHtmlImage()
+    .then(html => {
+      let src = getImageSrc(html);
+      // log(html);
+      return src;
+    })
+    .then(res => {
+      localImage = res;
+      io.emit("localImage", localImage);
+    });
+
+
   getHtmlLocal()
-  .then(html => {
-    let res = getLocalData(html);
-    return res
-  })
-  .then(res => {
-    areaData = res;
-    io.emit("localData", areaData);
-          // log("1시간 후 국내별");
+    .then(html => {
+      let res = getLocalData(html);
+      return res
+    })
+    .then(res => {
+      areaData = res;
+      io.emit("localData", areaData);
+      // log("1시간 후 국내별");
       // log(res);
-  })
+    })
 
 
   getHtmlForeign()
-  .then(html => {
-    let res = getGlobalData(html);
-    return res;
-  })
-  .then(res => {
-    foreignData = res.foreign;
-    let data = foreignData
-    io.emit("foreignData", data);
-    return res;
-  });
+    .then(html => {
+      let res = getGlobalData(html);
+      return res;
+    })
+    .then(res => {
+      foreignData = res.foreign;
+      let data = foreignData
+      io.emit("foreignData", data);
+      return res;
+    });
 
   getHtmlDomestic()
     .then(html => {
@@ -417,5 +432,5 @@ io.on("connection", socket => {
   io.emit("coronaData", data);
   io.emit("localData", areaData);
   io.emit("foreignData", foreignData);
-  
+  io.emit("localImage", localImage);
 });

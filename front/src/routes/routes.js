@@ -1,12 +1,11 @@
 import DashboardLayout from "@/pages/Layout/DashboardLayout.vue";
 
 import Home from "@/pages/Home.vue";
-import Maps from "@/pages/Maps.vue";
+import Maps from "@/pages/LocalMap.vue";
 import Global from "@/pages/Global.vue";
 import Local from "@/pages/Local.vue";
 import Preventation from "@/pages/Preventation.vue";
 import About from "@/pages/About.vue";
-import Test from "@/pages/test.vue";
 
 const routes = [
   {
@@ -32,7 +31,7 @@ const routes = [
       {
         path: "maps",
         name: "Maps",
-        component: Test
+        component: Maps
       },
       {
         path: "preventation",

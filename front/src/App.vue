@@ -16,23 +16,26 @@ export default {
 
   created() {
     this.$socket.on("coronaData", data => {
-      console.log("start", data.coronaData[0].data);
+      //console.log("start", data.coronaData[0].data);
       // console.log(data);
       this.resetLocalStorage();
       this.setCoronaDay(data.accumulateData);
       this.setData(data.coronaData);
-      console.log(data.coronaData);
+      //console.log(data.coronaData);
     }),
       this.$socket.on("localData", data => {
         this.resetLocalStorage();
-        console.log("local",data);
         this.setLocalData(data);
       });
 
     this.$socket.on("foreignData", data => {
       this.resetLocalStorage();
-      console.log(data);
+      //console.log(data);
       this.setForeignData(data);
+    });
+
+    this.$socket.on("localImage", data => {
+      this.setLocalMap(data);
     });
   },
   methods: {
@@ -41,7 +44,8 @@ export default {
       "setCoronaDay",
       "setForeignData",
       "setLocalData",
-      "resetLocalStorage"
+      "resetLocalStorage",
+      "setLocalMap"
     ])
   }
 };
