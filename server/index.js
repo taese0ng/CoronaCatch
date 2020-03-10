@@ -57,7 +57,7 @@ app.use(express.static("dist"));
 const getHtmlForeign = async () => {
   try {
     return await axios.get(
-      "http://ncov.mohw.go.kr/bdBoardList_Real.do?brdId=&brdGubun=&ncvContSeq=&contSeq=&board_id=&gubun="
+      "http://ncov.mohw.go.kr/bdBoardList_Real.do?brdId=1&brdGubun=14&ncvContSeq=&contSeq=&board_id=&gubun="
     );
   } catch (err) {
     console.error(err);
@@ -282,7 +282,6 @@ const getGlobalData = function (html) {
       // }
 
       //국외 데이터
-
       let temp = data_str
         .replace(country, "")
         .replace(/\(/gi, "")
