@@ -13,18 +13,29 @@ export default {
     console.log("destroyed");
     this.resetLocalStorage();
   },
+
   created() {
     this.$socket.on("coronaData", data => {
       console.log("start", data.coronaData[0].data);
+      // console.log(data);
       this.resetLocalStorage();
       this.setCoronaDay(data.accumulateData);
       this.setData(data.coronaData);
-      this.setForeignData(data.foreignData);
+      
     }),
-      this.$socket.on("areaData", data => {
-        this.resetLocalStorage();
-        this.setLocalData(data);
-      });
+    
+    this.$socket.on("localData", data => {
+      this.resetLocalStorage();
+      // console.log(data);
+      this.setLocalData(data);
+    });
+    
+    this.$socket.on("foreignData", data => {
+      this.resetLocalStorage();
+      // console.log(data);
+      this.setForeignData(data);
+    });
+    
   },
   methods: {
     ...mapMutations([
