@@ -254,7 +254,7 @@ const getGlobalData = function (html) {
   const $ = cheeiro.load(html.data);
   const $bodyList = $("div.data_table table.num tbody").children("tr");
   // 0: 확진환자 1: 확진환자 격리해제 2: 사망자 3: 검사진행
-
+  
   $bodyList.each(function (i, elem) {
 
     if (i > 5) {
@@ -285,7 +285,7 @@ const getGlobalData = function (html) {
 
         die = parseInt(die);
 
-        countryList[i - 6] = {
+        countryList[i - 17] = {
           country: country,
           confirm: confirm,
           die: die
@@ -293,7 +293,7 @@ const getGlobalData = function (html) {
       }
       else {
         temp = parseInt(temp);
-        countryList[i - 6] = {
+        countryList[i - 17] = {
           country: country,
           confirm: temp,
           die: 0
