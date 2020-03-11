@@ -110,10 +110,10 @@ const overlapCheck = function (dateKey) {
 const getImageSrc = function (html) {
   let src;
   const $ = cheeiro.load(html.data);
-  const $bodyImg = $("div.se_image div.se_sectionArea div.se_editArea div.se_viewArea").children('a.se_mediaArea');
+  const $bodyImg = $("div.se_image div.se_sectionArea div.se_editArea div.se_viewArea").eq(4).children('a.se_mediaArea');
 
-  src = $bodyImg.find("#SEDOC-1583835667114-917851683_image_6_img").attr('data-src');
-
+  src = $bodyImg.find(".se_mediaImage").attr('data-src');
+  console.log(src);
   return src;
 }
 
