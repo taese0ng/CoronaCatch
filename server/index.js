@@ -113,7 +113,7 @@ const getImageSrc = function (html) {
   const $bodyImg = $("div.se_image div.se_sectionArea div.se_editArea div.se_viewArea").eq(4).children('a.se_mediaArea');
 
   src = $bodyImg.find(".se_mediaImage").attr('data-src');
-  console.log(src);
+
   return src;
 }
 
@@ -252,12 +252,12 @@ const getGlobalData = function (html) {
 
   let countryList = [];
   const $ = cheeiro.load(html.data);
-  const $bodyList = $("div.data_table table.num tbody").children("tr");
+  const $bodyList = $("div.data_table table.num tbody").eq(0).children("tr");
   // 0: 확진환자 1: 확진환자 격리해제 2: 사망자 3: 검사진행
-  
+
   $bodyList.each(function (i, elem) {
 
-    if (i > 5) {
+    if (i > -1) {
       let title = $(this)
         .children("th")
         .text();
@@ -285,7 +285,7 @@ const getGlobalData = function (html) {
 
         die = parseInt(die);
 
-        countryList[i - 17] = {
+        countryList[i] = {
           country: country,
           confirm: confirm,
           die: die
@@ -293,7 +293,7 @@ const getGlobalData = function (html) {
       }
       else {
         temp = parseInt(temp);
-        countryList[i - 17] = {
+        countryList[i] = {
           country: country,
           confirm: temp,
           die: 0
