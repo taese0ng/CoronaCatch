@@ -388,7 +388,8 @@ for (let i = 1; i <= 6; i++) {
 }
 
 // 마스크 api 5분마다 한번씩 가져오기
-schedule.scheduleJob("*/5 * * * *", function () {
+schedule.scheduleJob("50 */5 * * * *", function () {
+  console.log("지금 들어옴")
   for (let i = 1; i <= 6; i++) {
     getJson("https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/sales/json?perPage=5000&page=" + i)
       .then(html => {
