@@ -99,6 +99,18 @@ const getHtmlImage = async () => {
   }
 }
 
+//json 요청 
+const getJson = async (url) => {
+  try {
+    return await axios.get(
+      url
+    );
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+
 // 1시간마다 갱신하기 때문에 중복제외 검사
 const overlapCheck = function (dateKey) {
   if (accumulateData[accumulateData.length - 1]["date"] != dateKey) return true;
@@ -307,6 +319,120 @@ const getGlobalData = function (html) {
   }
   return data;
 }
+
+// 마스크 api 처음에 가져올때 
+let storeTotalCheck = 0;
+let saleTotalCheck = 0;
+let totalStores = 0;
+var storeInfos = [];
+var sales = [];
+var storeSales = [];
+for (let i = 1; i <= 6; i++) {
+  getJson("https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/stores/json?perPage=5000&page=" + i)
+    .then(html => {
+      let data = html.data;
+      storeInfos = storeInfos.concat(data.storeInfos);
+      totalStores = data.totalCount;
+      storeTotalCheck++;
+
+    })
+    .then(() => {
+      if (storeTotalCheck == 6) {
+        storeTotalCheck = 0;
+        console.log(storeInfos.length);
+        for (let i = 1; i <= 6; i++) {
+          getJson("https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/sales/json?perPage=5000&page=" + i)
+            .then(html => {
+
+              let data = html.data;
+
+              let totalCount = data.totalCount;
+              sales = sales.concat(data.sales);
+              saleTotalCheck++;
+              return totalCount;
+            })
+            .then((totalCount) => {
+              if (saleTotalCheck == 6) {
+                // console.log(storeInfos[0].code);
+                saleTotalCheck = 0;
+                for (let j = 0; j < totalCount; j++) {
+                  // console.log(j);
+                  // sales배열과 storeInfos배열이 같은코드가 있는 것 찾기
+                  let temp = storeInfos.filter(function (item) {
+                    return item.code == sales[j].code;
+                  })
+
+                  storeSales[j] = {
+                    code: temp.code,
+                    addr: temp.addr,
+                    lat: temp.lat,
+                    lng: temp.lng,
+                    name: temp.name,
+                    type: temp.type,
+                    created_at: sales[j].created_at,
+                    remain_stat: sales[j].remain_stat,
+                    stock_at: sales[j].stock_at
+                  }
+                }
+                console.log("storeSales");
+                console.log(storeSales.length);
+                return storeSales;
+              }
+            })
+            .then((storeSales)=>{
+              io.emit("storeSales",storeSales);
+            })
+        }
+      }
+    })
+}
+
+// 마스크 api 5분마다 한번씩 가져오기
+schedule.scheduleJob("*/5 * * * *", function () {
+  for (let i = 1; i <= 6; i++) {
+    getJson("https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/sales/json?perPage=5000&page=" + i)
+      .then(html => {
+
+        let data = html.data;
+
+        let totalCount = data.totalCount;
+        sales = sales.concat(data.sales);
+        saleTotalCheck++;
+        return totalCount;
+      })
+      .then((totalCount) => {
+        if (saleTotalCheck == 6) {
+          // console.log(storeInfos[0].code);
+          saleTotalCheck = 0;
+          for (let j = 0; j < totalCount; j++) {
+            // console.log(j);
+            // sales배열과 storeInfos배열이 같은코드가 있는 것 찾기
+            let temp = storeInfos.filter(function (item) {
+              return item.code == sales[j].code;
+            })
+
+            storeSales[j] = {
+              code: temp.code,
+              addr: temp.addr,
+              lat: temp.lat,
+              lng: temp.lng,
+              name: temp.name,
+              type: temp.type,
+              created_at: sales[j].created_at,
+              remain_stat: sales[j].remain_stat,
+              stock_at: sales[j].stock_at
+            }
+          }
+          console.log("storeSales");
+          console.log(storeSales.length);
+        }
+      })
+      .then((storeSales)=>{
+        io.emit("storeSales",storeSales);
+      })
+  }
+});
+
 
 //서버 시작시 한번 동작
 
