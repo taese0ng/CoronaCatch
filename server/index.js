@@ -327,6 +327,7 @@ let totalStores = 0;
 var storeInfos = [];
 var sales = [];
 var storeSales = [];
+
 for (let i = 1; i <= 6; i++) {
   getJson("https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/stores/json?perPage=5000&page=" + i)
     .then(html => {
@@ -354,33 +355,42 @@ for (let i = 1; i <= 6; i++) {
             .then((totalCount) => {
               if (saleTotalCheck == 6) {
                 // console.log(storeInfos[0].code);
-                saleTotalCheck = 0;
+
                 for (let j = 0; j < totalCount; j++) {
-                  // console.log(j);
+
                   // sales배열과 storeInfos배열이 같은코드가 있는 것 찾기
+
                   let temp = storeInfos.filter(function (item) {
+
                     return item.code == sales[j].code;
                   })
 
+                  if (temp.length == 0)
+                    continue;
                   storeSales[j] = {
-                    code: temp.code,
-                    addr: temp.addr,
-                    lat: temp.lat,
-                    lng: temp.lng,
-                    name: temp.name,
-                    type: temp.type,
+                    code: temp[0].code,
+                    addr: temp[0].addr,
+                    lat: temp[0].lat,
+                    lng: temp[0].lng,
+                    name: temp[0].name,
+                    type: temp[0].type,
                     created_at: sales[j].created_at,
                     remain_stat: sales[j].remain_stat,
                     stock_at: sales[j].stock_at
                   }
+
                 }
                 console.log("storeSales");
                 console.log(storeSales.length);
                 return storeSales;
               }
             })
-            .then((storeSales)=>{
-              io.emit("storeSales",storeSales);
+            .then((storeSales) => {
+              if (saleTotalCheck == 6) {
+                saleTotalCheck = 0;
+                console.log(storeSales[0]);
+                io.emit("storeSales", storeSales);
+              }
             })
         }
       }
@@ -390,6 +400,7 @@ for (let i = 1; i <= 6; i++) {
 // 마스크 api 5분마다 한번씩 가져오기
 schedule.scheduleJob("50 */5 * * * *", function () {
   console.log("지금 들어옴")
+  let saleTotalCheck = 0;
   for (let i = 1; i <= 6; i++) {
     getJson("https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/sales/json?perPage=5000&page=" + i)
       .then(html => {
@@ -404,7 +415,7 @@ schedule.scheduleJob("50 */5 * * * *", function () {
       .then((totalCount) => {
         if (saleTotalCheck == 6) {
           // console.log(storeInfos[0].code);
-          saleTotalCheck = 0;
+
           for (let j = 0; j < totalCount; j++) {
             // console.log(j);
             // sales배열과 storeInfos배열이 같은코드가 있는 것 찾기
@@ -412,24 +423,31 @@ schedule.scheduleJob("50 */5 * * * *", function () {
               return item.code == sales[j].code;
             })
 
+            if (temp.length == 0)
+              continue;
+
             storeSales[j] = {
-              code: temp.code,
-              addr: temp.addr,
-              lat: temp.lat,
-              lng: temp.lng,
-              name: temp.name,
-              type: temp.type,
+              code: temp[0].code,
+              addr: temp[0].addr,
+              lat: temp[0].lat,
+              lng: temp[0].lng,
+              name: temp[0].name,
+              type: temp[0].type,
               created_at: sales[j].created_at,
               remain_stat: sales[j].remain_stat,
               stock_at: sales[j].stock_at
             }
+
           }
           console.log("storeSales");
           console.log(storeSales.length);
         }
       })
-      .then((storeSales)=>{
-        io.emit("storeSales",storeSales);
+      .then((storeSales) => {
+        if (saleTotalCheck == 6) {
+          saleTotalCheck = 0;
+          io.emit("storeSales", storeSales);
+        }
       })
   }
 });
@@ -556,8 +574,9 @@ io.on("connection", socket => {
     coronaData: coronaData,
   };
 
-  io.emit("coronaData", data);
-  io.emit("localData", areaData);
-  io.emit("foreignData", foreignData);
-  io.emit("localImage", localImage);
+  io.to(socket.client.id).emit("coronaData", data);
+  io.to(socket.client.id).emit("localData", areaData);
+  io.to(socket.client.id).emit("foreignData", foreignData);
+  io.to(socket.client.id).emit("localImage", localImage);
+  io.to(socket.client.id).emit("storeSales", storeSales);
 });
