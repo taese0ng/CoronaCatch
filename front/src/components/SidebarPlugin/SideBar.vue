@@ -5,7 +5,7 @@
     :data-image="backgroundImage"
     :style="sidebarStyle"
   >
-    <div class="logo">
+    <div class="logo" @click="hideSidebar">
       <router-link to="/">
         <a class="simple-text logo-mini">
           <div class="logo-img">
@@ -82,6 +82,17 @@ export default {
       return {
         backgroundImage: `url(${this.backgroundImage})`
       };
+    }
+  },
+  methods: {
+    hideSidebar() {
+      if (
+        this.autoClose &&
+        this.$sidebar &&
+        this.$sidebar.showSidebar === true
+      ) {
+        this.$sidebar.displaySidebar(false);
+      }
     }
   }
 };

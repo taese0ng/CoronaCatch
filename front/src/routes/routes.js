@@ -6,6 +6,7 @@ import Global from "@/pages/Global.vue";
 import Local from "@/pages/Local.vue";
 import Preventation from "@/pages/Preventation.vue";
 import About from "@/pages/About.vue";
+import MaskMap from "@/pages/MaskMap.vue";
 
 const routes = [
   {
@@ -42,6 +43,11 @@ const routes = [
         path: "about",
         name: "About",
         component: About
+      },
+      {
+        path: "maskmap",
+        name: "MaskMap",
+        component: MaskMap
       }
     ]
   }

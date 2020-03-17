@@ -29,6 +29,10 @@ import io from "socket.io-client";
 import { store } from "./store/store";
 import "vue-resize/dist/vue-resize.css";
 import VueResize from "vue-resize";
+import axios from "axios";
+import VueAxios from "vue-axios";
+import VueGeolocation from "vue-browser-geolocation";
+Vue.use(VueGeolocation);
 
 // MaterialDashboard plugin
 import MaterialDashboard from "./material-dashboard";
@@ -42,8 +46,7 @@ const router = new VueRouter({
   linkExactActiveClass: "nav-item active"
 });
 
-Vue.prototype.$socket = io("SERVER_IP");
-
+Vue.prototype.$socket = io.connect("www.coronacatch.com", { secure: true });
 Vue.prototype.$Chartist = Chartist;
 
 Vue.use(VueRouter);
@@ -52,6 +55,7 @@ Vue.use(GlobalComponents);
 Vue.use(GlobalDirectives);
 Vue.use(Notifications);
 Vue.use(VueResize);
+Vue.use(VueAxios, axios);
 
 /* eslint-disable no-new */
 new Vue({

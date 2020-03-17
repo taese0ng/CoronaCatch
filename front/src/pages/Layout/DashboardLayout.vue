@@ -7,6 +7,10 @@
         <md-icon>dashboard</md-icon>
         <p>Home</p>
       </sidebar-link>
+      <sidebar-link to="/maskmap">
+        <md-icon>add_location</md-icon>
+        <p>Mask Maps</p>
+      </sidebar-link>
       <sidebar-link to="/global">
         <md-icon>language</md-icon>
         <p>Global</p>

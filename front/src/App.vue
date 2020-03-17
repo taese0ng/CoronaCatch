@@ -6,15 +6,16 @@
 import { mapMutations } from "vuex";
 export default {
   beforeDestroy() {
-    console.log("before");
     this.resetLocalStorage();
   },
   destroyed() {
-    console.log("destroyed");
     this.resetLocalStorage();
   },
 
   created() {
+    this.axios.get("http://ip-api.com/json").then(response => {
+      this.setGeoLocation(response);
+    });
     this.$socket.on("coronaData", data => {
       //console.log("start", data.coronaData[0].data);
       // console.log(data);
@@ -22,11 +23,11 @@ export default {
       this.setCoronaDay(data.accumulateData);
       this.setData(data.coronaData);
       //console.log(data.coronaData);
-    }),
-      this.$socket.on("localData", data => {
-        this.resetLocalStorage();
-        this.setLocalData(data);
-      });
+    });
+    this.$socket.on("localData", data => {
+      this.resetLocalStorage();
+      this.setLocalData(data);
+    });
 
     this.$socket.on("foreignData", data => {
       this.resetLocalStorage();
@@ -45,7 +46,8 @@ export default {
       "setForeignData",
       "setLocalData",
       "resetLocalStorage",
-      "setLocalMap"
+      "setLocalMap",
+      "setGeoLocation"
     ])
   }
 };

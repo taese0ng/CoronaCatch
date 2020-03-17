@@ -1,8 +1,7 @@
 <template>
-  <li class="md-list-item">
+  <li class="md-list-item" @click="hideSidebar">
     <router-link
       class="md-list-item-router md-list-item-container md-button-clean"
-      @click="hideSidebar"
       v-bind="$attrs"
     >
       <div class="md-list-item-content md-ripple">

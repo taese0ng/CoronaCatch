@@ -20,6 +20,8 @@ const vuexLocalStorage = new VuexPersist({
 export const store = new Vuex.Store({
   // state
   state: {
+    maskStores: "",
+    geoLocation: { lat: 0, lon: 0 },
     localMap: "",
     mapWidth: 0,
     isMobile: 0,
@@ -170,6 +172,9 @@ export const store = new Vuex.Store({
     },
     getLocalMap(state) {
       return state.localMap;
+    },
+    getGeoLocation(state) {
+      return state.geoLocation;
     }
   },
   // Method
@@ -297,6 +302,10 @@ export const store = new Vuex.Store({
     setLocalMap(state, data) {
       state.localMap = data;
       //console.log(state.localMap);
+    },
+    setGeoLocation(state, data) {
+      state.geoLocation.lat = data.data.lat;
+      state.geoLocation.lon = data.data.lon;
     }
   },
   // Actions
