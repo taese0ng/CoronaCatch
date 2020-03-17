@@ -82,7 +82,7 @@ export default {
     onLoad(map) {
       this.map = map;
       this.map.setMinLevel(2);
-      this.map.setMaxLevel(3);
+      this.map.setMaxLevel(5);
       this.createMarker();
     },
     clearMarker() {

@@ -31,7 +31,7 @@
         <md-icon>star</md-icon>
         <p>About</p>
       </sidebar-link>
-      <div id="ad">
+      <!-- <div id="ad">
         <iframe
           width="200"
           height="200"
@@ -40,7 +40,7 @@
           frameborder="0"
           scrolling="no"
         ></iframe>
-      </div>
+      </div> -->
     </side-bar>
 
     <div class="main-panel">
