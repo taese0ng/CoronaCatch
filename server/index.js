@@ -1,15 +1,43 @@
+const express = require('express'); 
+const https = require('https');
+const http = require('http');
+const fs = require('fs');
 const axios = require("axios");
 const cheeiro = require("cheerio");
-const log = console.log;
-const express = require("express");
 const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const csv = require('csvtojson');
-var history = require('connect-history-api-fallback'); //npm install --save connect-history-api-fallback
-const app = express();
-const server = app.use(history()).listen(80, function () {
-  console.log("Listening on port *: 80");
-});
 const schedule = require("node-schedule");
+var history = require("connect-history-api-fallback"); //npm install --save connect-history-api-fallback
+const app = express();
+
+const options = { // letsencrypt로 받은 인증서 경로를 입력해 줍니다.
+ca: fs.readFileSync('/etc/letsencrypt/live/www.coronacatch.com/fullchain.pem'),
+key: fs.readFileSync('/etc/letsencrypt/live/www.coronacatch.com/privkey.pem'),
+cert: fs.readFileSync('/etc/letsencrypt/live/www.coronacatch.com/cert.pem')
+};
+
+app.use(history());
+app.use(express.static("dist"));
+
+// app.use(function(req,res,next){
+//   if(!req.secure)
+//     res.redirect("https://"+req.headers.host+req.url);
+//   else
+//     next();
+// })
+
+http.createServer(function(req,res){
+  res.writeHead(301,{"Location":"https://"+req.headers['host']+req.url});
+  res.end();
+}).listen(80,function(){
+    console.log("80포트 염");
+});
+
+const server = https.createServer(options, app).listen(443,"0.0.0.0",function(){
+    console.log("443포트 염");
+});
+
+const io = require("socket.io")(server);
 
 var localImage;
 var coronaData = [];
@@ -18,15 +46,15 @@ var areaData = [];
 var accumulateData = [];
 
 //기존 파일 읽어서 서버의 배열에 저장
-csv().fromFile('accumulateData.csv')
-  .then((json) => {
+csv()
+  .fromFile("accumulateData.csv")
+  .then(json => {
     accumulateData = json;
-
   });
 
 //csv파일에 저장하기 위한 writer선언
 const csvWriter = createCsvWriter({
-  path: 'accumulateData.csv',
+  path: "accumulateData.csv",
   header: [
     { id: "date", title: "date" },
     { id: "confirm", title: "confirm" },
@@ -34,25 +62,20 @@ const csvWriter = createCsvWriter({
     { id: "die", title: "die" }
   ],
   append: true,
-  recordDelimiter: '\r\n'
+  recordDelimiter: "\r\n"
 });
 
 //csv파일에 덮어쓰기 위한 writer선언
 const csvUpdateWriter = createCsvWriter({
-  path: 'accumulateData.csv',
+  path: "accumulateData.csv",
   header: [
     { id: "date", title: "date" },
     { id: "confirm", title: "confirm" },
     { id: "unlock", title: "unlock" },
     { id: "die", title: "die" }
   ],
-  recordDelimiter: '\r\n'
+  recordDelimiter: "\r\n"
 });
-
-
-const io = require("socket.io")(server);
-
-app.use(express.static("dist"));
 
 // 국가별 데이터 가져옴
 const getHtmlForeign = async () => {
@@ -65,7 +88,7 @@ const getHtmlForeign = async () => {
   }
 };
 
-// 국내 총 데이터 가져옴 
+// 국내 총 데이터 가져옴
 const getHtmlDomestic = async () => {
   try {
     return await axios.get(
@@ -75,7 +98,6 @@ const getHtmlDomestic = async () => {
     console.error(err);
   }
 };
-
 
 // 지역별 데이터 가져옴
 const getHtmlLocal = async () => {
@@ -97,47 +119,49 @@ const getHtmlImage = async () => {
   } catch (err) {
     console.error(err);
   }
-}
+};
 
-//json 요청 
-const getJson = async (url) => {
+//json 요청
+const getJson = async url => {
   try {
-    return await axios.get(
-      url
-    );
+    return await axios.get(url);
   } catch (err) {
     console.error(err);
   }
 };
 
-
 // 1시간마다 갱신하기 때문에 중복제외 검사
-const overlapCheck = function (dateKey) {
+const overlapCheck = function(dateKey) {
   if (accumulateData[accumulateData.length - 1]["date"] != dateKey) return true;
   return false;
 };
 
-
 // 네이버 이미지 가져오는 방법 정의
-const getImageSrc = function (html) {
+const getImageSrc = function(html) {
   let src;
   const $ = cheeiro.load(html.data);
-  const $bodyImg = $("div.se_image div.se_sectionArea div.se_editArea div.se_viewArea").eq(5).children('a.se_mediaArea');
+  const $bodyImg = $(
+    "div.se_image div.se_sectionArea div.se_editArea div.se_viewArea"
+  )
+    .eq(5)
+    .children("a.se_mediaArea");
 
-  src = $bodyImg.find(".se_mediaImage").attr('data-src');
+  src = $bodyImg.find(".se_mediaImage").attr("data-src");
 
   return src;
-}
+};
 
 // 지역별 데이터 가져오는 방법 정의
-const getLocalData = function (html) {
+const getLocalData = function(html) {
   let list = {};
   const $ = cheeiro.load(html.data);
   const $bodyList = $("div.data_table table.num tbody").children("tr");
-  const time = $("div.timetable p.info").children("span").text();
-  list['time'] = time;
-  list['data'] = [];
-  $bodyList.each(function (i, elem) {
+  const time = $("div.timetable p.info")
+    .children("span")
+    .text();
+  list["time"] = time;
+  list["data"] = [];
+  $bodyList.each(function(i, elem) {
     let area = $(this)
       .children("th")
       .text();
@@ -176,20 +200,20 @@ const getLocalData = function (html) {
     let die = parseInt(die_str);
 
     if (area != "검역")
-      list['data'][i] = {
+      list["data"][i] = {
         area: area,
         increase: increase,
         confirm: confirm,
         die: die,
-        check: check,
+        check: check
       };
   });
   const data = list;
   return data;
-}
+};
 
 //국내 데이터 가져오는 방법 정의
-const getDomesticData = function (html) {
+const getDomesticData = function(html) {
   let date = new Date();
   let month = date.getMonth() + 1;
   let day = date.getDate();
@@ -200,12 +224,17 @@ const getDomesticData = function (html) {
   const $ = cheeiro.load(html.data);
   const $bodyList = $("div.graph_view div.box div.circle").children("p.txt");
 
-  $bodyList.each(function (i, elem) {
-    let title = $(this).children("span.txt_sort").text();
-    let data_str = $(this).children("strong.num").text().replace(/,/, "").replace(/"/, "");
+  $bodyList.each(function(i, elem) {
+    let title = $(this)
+      .children("span.txt_sort")
+      .text();
+    let data_str = $(this)
+      .children("strong.num")
+      .text()
+      .replace(/,/, "")
+      .replace(/"/, "");
     let data = parseInt(data_str);
     if (i == 0) {
-
       if (overlapCheck(dateKey)) {
         updateCheck = false;
         overlap = false;
@@ -213,15 +242,13 @@ const getDomesticData = function (html) {
           date: dateKey,
           confirm: data_str
         };
-      }
-      else {
+      } else {
         overlap = true;
         if (accumulateData[accumulateData.length - 1]["confirm"] != data_str)
           updateCheck = true;
         accumulateData[accumulateData.length - 1]["confirm"] = data_str;
       }
-    }
-    else if (i == 1)
+    } else if (i == 1)
       accumulateData[accumulateData.length - 1]["unlock"] = data_str;
     else if (i == 3)
       accumulateData[accumulateData.length - 1]["die"] = data_str;
@@ -230,24 +257,20 @@ const getDomesticData = function (html) {
       title: title,
       data: data
     };
-
   });
 
   // 저장 중복 검사
   if (!overlap) {
-
     const addDate = [];
     addDate.push(accumulateData[accumulateData.length - 1]);
-    csvWriter.writeRecords(addDate)
-      .then(() => {
-        log("CSV 파일에 추가 성공!");
-      });
+    csvWriter.writeRecords(addDate).then(() => {
+      log("CSV 파일에 추가 성공!");
+    });
   }
   if (updateCheck) {
-    csvUpdateWriter.writeRecords(accumulateData)
-      .then(() => {
-        log("CSV 파일 다시 저장 성공!")
-      });
+    csvUpdateWriter.writeRecords(accumulateData).then(() => {
+      log("CSV 파일 다시 저장 성공!");
+    });
   }
 
   updateCheck = false;
@@ -255,20 +278,20 @@ const getDomesticData = function (html) {
 
   const data = {
     domestic: ulList
-  }
+  };
   return data;
-}
+};
 
 //국가별 데이터 가져오는 방법 정의, 누적 데이터도 여기서
-const getGlobalData = function (html) {
-
+const getGlobalData = function(html) {
   let countryList = [];
   const $ = cheeiro.load(html.data);
-  const $bodyList = $("div.data_table table.num tbody").eq(0).children("tr");
+  const $bodyList = $("div.data_table table.num tbody")
+    .eq(0)
+    .children("tr");
   // 0: 확진환자 1: 확진환자 격리해제 2: 사망자 3: 검사진행
 
-  $bodyList.each(function (i, elem) {
-
+  $bodyList.each(function(i, elem) {
     if (i > -1) {
       let title = $(this)
         .children("th")
@@ -302,8 +325,7 @@ const getGlobalData = function (html) {
           confirm: confirm,
           die: die
         };
-      }
-      else {
+      } else {
         temp = parseInt(temp);
         countryList[i] = {
           country: country,
@@ -316,142 +338,141 @@ const getGlobalData = function (html) {
 
   const data = {
     foreign: countryList
-  }
+  };
   return data;
-}
+};
 
-// 마스크 api 처음에 가져올때 
-let storeTotalCheck = 0;
-let saleTotalCheck = 0;
-let totalStores = 0;
-var storeInfos = [];
-var sales = [];
-var storeSales = [];
+// // 마스크 api 처음에 가져올때
+// let storeTotalCheck = 0;
+// let saleTotalCheck = 0;
+// let totalStores = 0;
+// var storeInfos = [];
+// var sales = [];
+// var storeSales = [];
 
-for (let i = 1; i <= 6; i++) {
-  getJson("https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/stores/json?perPage=5000&page=" + i)
-    .then(html => {
-      let data = html.data;
-      storeInfos = storeInfos.concat(data.storeInfos);
-      totalStores = data.totalCount;
-      storeTotalCheck++;
+// for (let i = 1; i <= 6; i++) {
+//   getJson("https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/stores/json?perPage=5000&page=" + i)
+//     .then(html => {
+//       let data = html.data;
+//       storeInfos = storeInfos.concat(data.storeInfos);
+//       totalStores = data.totalCount;
+//       storeTotalCheck++;
 
-    })
-    .then(() => {
-      if (storeTotalCheck == 6) {
-        storeTotalCheck = 0;
-        console.log(storeInfos.length);
-        for (let i = 1; i <= 6; i++) {
-          getJson("https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/sales/json?perPage=5000&page=" + i)
-            .then(html => {
+//     })
+//     .then(() => {
+//       if (storeTotalCheck == 6) {
+//         storeTotalCheck = 0;
+//         console.log(storeInfos.length);
+//         for (let i = 1; i <= 6; i++) {
+//           getJson("https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/sales/json?perPage=5000&page=" + i)
+//             .then(html => {
 
-              let data = html.data;
+//               let data = html.data;
 
-              let totalCount = data.totalCount;
-              sales = sales.concat(data.sales);
-              saleTotalCheck++;
-              return totalCount;
-            })
-            .then((totalCount) => {
-              if (saleTotalCheck == 6) {
-                // console.log(storeInfos[0].code);
+//               let totalCount = data.totalCount;
+//               sales = sales.concat(data.sales);
+//               saleTotalCheck++;
+//               return totalCount;
+//             })
+//             .then((totalCount) => {
+//               if (saleTotalCheck == 6) {
+//                 // console.log(storeInfos[0].code);
 
-                for (let j = 0; j < totalCount; j++) {
+//                 for (let j = 0; j < totalCount; j++) {
 
-                  // sales배열과 storeInfos배열이 같은코드가 있는 것 찾기
+//                   // sales배열과 storeInfos배열이 같은코드가 있는 것 찾기
 
-                  let temp = storeInfos.filter(function (item) {
+//                   let temp = storeInfos.filter(function (item) {
 
-                    return item.code == sales[j].code;
-                  })
+//                     return item.code == sales[j].code;
+//                   })
 
-                  if (temp.length == 0)
-                    continue;
-                  storeSales[j] = {
-                    code: temp[0].code,
-                    addr: temp[0].addr,
-                    lat: temp[0].lat,
-                    lng: temp[0].lng,
-                    name: temp[0].name,
-                    type: temp[0].type,
-                    created_at: sales[j].created_at,
-                    remain_stat: sales[j].remain_stat,
-                    stock_at: sales[j].stock_at
-                  }
+//                   if (temp.length == 0)
+//                     continue;
+//                   storeSales[j] = {
+//                     code: temp[0].code,
+//                     addr: temp[0].addr,
+//                     lat: temp[0].lat,
+//                     lng: temp[0].lng,
+//                     name: temp[0].name,
+//                     type: temp[0].type,
+//                     created_at: sales[j].created_at,
+//                     remain_stat: sales[j].remain_stat,
+//                     stock_at: sales[j].stock_at
+//                   }
 
-                }
-                console.log("storeSales");
-                console.log(storeSales.length);
-                return storeSales;
-              }
-            })
-            .then((storeSales) => {
-              if (saleTotalCheck == 6) {
-                saleTotalCheck = 0;
-                console.log(storeSales[0]);
-                io.emit("storeSales", storeSales);
-              }
-            })
-        }
-      }
-    })
-}
+//                 }
+//                 console.log("storeSales");
+//                 console.log(storeSales.length);
+//                 return storeSales;
+//               }
+//             })
+//             .then((storeSales) => {
+//               if (saleTotalCheck == 6) {
+//                 saleTotalCheck = 0;
+//                 console.log(storeSales[0]);
+//                 io.emit("storeSales", storeSales);
+//               }
+//             })
+//         }
+//       }
+//     })
+// }
 
-// 마스크 api 5분마다 한번씩 가져오기
-schedule.scheduleJob("50 */5 * * * *", function () {
-  console.log("지금 들어옴")
-  let saleTotalCheck = 0;
-  for (let i = 1; i <= 6; i++) {
-    getJson("https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/sales/json?perPage=5000&page=" + i)
-      .then(html => {
+// // 마스크 api 5분마다 한번씩 가져오기
+// schedule.scheduleJob("50 */5 * * * *", function () {
+//   console.log("지금 들어옴")
+//   let saleTotalCheck = 0;
+//   for (let i = 1; i <= 6; i++) {
+//     getJson("https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/sales/json?perPage=5000&page=" + i)
+//       .then(html => {
 
-        let data = html.data;
+//         let data = html.data;
 
-        let totalCount = data.totalCount;
-        sales = sales.concat(data.sales);
-        saleTotalCheck++;
-        return totalCount;
-      })
-      .then((totalCount) => {
-        if (saleTotalCheck == 6) {
-          // console.log(storeInfos[0].code);
+//         let totalCount = data.totalCount;
+//         sales = sales.concat(data.sales);
+//         saleTotalCheck++;
+//         return totalCount;
+//       })
+//       .then((totalCount) => {
+//         if (saleTotalCheck == 6) {
+//           // console.log(storeInfos[0].code);
 
-          for (let j = 0; j < totalCount; j++) {
-            // console.log(j);
-            // sales배열과 storeInfos배열이 같은코드가 있는 것 찾기
-            let temp = storeInfos.filter(function (item) {
-              return item.code == sales[j].code;
-            })
+//           for (let j = 0; j < totalCount; j++) {
+//             // console.log(j);
+//             // sales배열과 storeInfos배열이 같은코드가 있는 것 찾기
+//             let temp = storeInfos.filter(function (item) {
+//               return item.code == sales[j].code;
+//             })
 
-            if (temp.length == 0)
-              continue;
+//             if (temp.length == 0)
+//               continue;
 
-            storeSales[j] = {
-              code: temp[0].code,
-              addr: temp[0].addr,
-              lat: temp[0].lat,
-              lng: temp[0].lng,
-              name: temp[0].name,
-              type: temp[0].type,
-              created_at: sales[j].created_at,
-              remain_stat: sales[j].remain_stat,
-              stock_at: sales[j].stock_at
-            }
+//             storeSales[j] = {
+//               code: temp[0].code,
+//               addr: temp[0].addr,
+//               lat: temp[0].lat,
+//               lng: temp[0].lng,
+//               name: temp[0].name,
+//               type: temp[0].type,
+//               created_at: sales[j].created_at,
+//               remain_stat: sales[j].remain_stat,
+//               stock_at: sales[j].stock_at
+//             }
 
-          }
-          console.log("storeSales");
-          console.log(storeSales.length);
-        }
-      })
-      .then((storeSales) => {
-        if (saleTotalCheck == 6) {
-          saleTotalCheck = 0;
-          io.emit("storeSales", storeSales);
-        }
-      })
-  }
-});
-
+//           }
+//           console.log("storeSales");
+//           console.log(storeSales.length);
+//         }
+//       })
+//       .then((storeSales) => {
+//         if (saleTotalCheck == 6) {
+//           saleTotalCheck = 0;
+//           io.emit("storeSales", storeSales);
+//         }
+//       })
+//   }
+// });
 
 //서버 시작시 한번 동작
 
@@ -470,13 +491,13 @@ getHtmlLocal()
   .then(html => {
     let res = getLocalData(html);
 
-    return res
+    return res;
   })
   .then(res => {
     areaData = res;
     // log("국내별");
     // log(areaData);
-  })
+  });
 
 getHtmlForeign()
   .then(html => {
@@ -504,11 +525,8 @@ getHtmlDomestic()
     // log(accumulateData);
   });
 
-
-
 // 매시간(테스트용 1분마다)마다 데이터 크롤링 후 프론트로 전송
-const j = schedule.scheduleJob("1 1 * * * *", function () {
-
+const j = schedule.scheduleJob("1 1 * * * *", function() {
   getHtmlImage()
     .then(html => {
       let src = getImageSrc(html);
@@ -520,19 +538,17 @@ const j = schedule.scheduleJob("1 1 * * * *", function () {
       io.emit("localImage", localImage);
     });
 
-
   getHtmlLocal()
     .then(html => {
       let res = getLocalData(html);
-      return res
+      return res;
     })
     .then(res => {
       areaData = res;
       io.emit("localData", areaData);
       // log("1시간 후 국내별");
       // log(res);
-    })
-
+    });
 
   getHtmlForeign()
     .then(html => {
@@ -541,7 +557,7 @@ const j = schedule.scheduleJob("1 1 * * * *", function () {
     })
     .then(res => {
       foreignData = res.foreign;
-      let data = foreignData
+      let data = foreignData;
       io.emit("foreignData", data);
       return res;
     });
@@ -555,7 +571,7 @@ const j = schedule.scheduleJob("1 1 * * * *", function () {
       coronaData = res.domestic;
       let data = {
         accumulateData: accumulateData,
-        coronaData: res.domestic,
+        coronaData: res.domestic
       };
       // log("1시간 후 국내");
       // log(res);
@@ -571,12 +587,39 @@ io.on("connection", socket => {
 
   let data = {
     accumulateData: accumulateData,
-    coronaData: coronaData,
+    coronaData: coronaData
   };
 
   io.to(socket.client.id).emit("coronaData", data);
   io.to(socket.client.id).emit("localData", areaData);
   io.to(socket.client.id).emit("foreignData", foreignData);
   io.to(socket.client.id).emit("localImage", localImage);
-  io.to(socket.client.id).emit("storeSales", storeSales);
+
+  socket.on("setLocation", center => {
+    let lat = center.lat; //위도
+    let lng = center.lng; //경도
+    lat = parseFloat(lat);
+    lng = parseFloat(lng);
+    var msg;
+    // lat=37.491130
+    // lng=127.988821
+    if (lat < 33.0 || lat > 43.0 || lng < 124.0 || lng > 132.0) msg = "NO";
+    else {
+      msg = "YES";
+      getJson(
+        "https://8oi9s0nnth.apigw.ntruss.com/corona19-masks/v1/storesByGeo/json?m=3000&lat=" +
+          lat +
+          "&lng=" +
+          lng
+      ).then(html => {
+        let data = html.data;
+        let emitData = {
+          msg: msg,
+          data: data
+        };
+        io.to(socket.client.id).emit("setLocation", emitData);
+      });
+    }
+  });
 });
+
