@@ -46,6 +46,7 @@ const router = new VueRouter({
   linkExactActiveClass: "nav-item active"
 });
 
+//Vue.prototype.$socket = io("49.50.166.64:80");
 Vue.prototype.$socket = io.connect("www.coronacatch.com", { secure: true });
 Vue.prototype.$Chartist = Chartist;
 

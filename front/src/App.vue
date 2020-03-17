@@ -13,9 +13,9 @@ export default {
   },
 
   created() {
-    this.axios.get("http://ip-api.com/json").then(response => {
-      this.setGeoLocation(response);
-    });
+    // this.axios.get("http://ip-api.com/json").then(response => {
+    //   
+    // });
     this.$socket.on("coronaData", data => {
       //console.log("start", data.coronaData[0].data);
       // console.log(data);
@@ -46,8 +46,7 @@ export default {
       "setForeignData",
       "setLocalData",
       "resetLocalStorage",
-      "setLocalMap",
-      "setGeoLocation"
+      "setLocalMap"
     ])
   }
 };

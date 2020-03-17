@@ -10,6 +10,9 @@
             <p class="category">전국 약국 공공마스크 실시간 현황</p>
           </md-card-header>
           <md-card-content>
+            <span id="myLocation" @click="myLocation"
+              ><md-icon>my_location</md-icon>현재위치로 가기</span
+            >
             <vue-daum-map
               :appKey="appKey"
               :center.sync="center"
@@ -29,20 +32,29 @@
 
 <script>
 import VueDaumMap from "vue-daum-map";
-import { mapGetter, mapGetters } from "vuex";
+
 var marker = [];
 var mk, icon;
 export default {
   components: {
     VueDaumMap
   },
-  computed: {
-    ...mapGetters(["getGeoLocation"])
-  },
   created() {
+    if ("geolocation" in navigator) {
+      console.log("사용가능!");
+      navigator.geolocation.getCurrentPosition(
+        pos => {
+          this.center.lat = pos.coords.latitude;
+          this.UserlocPosition.lat = pos.coords.latitude;
+          this.center.lng = pos.coords.longitude;
+          this.UserlocPosition.lng = pos.coords.longitude;
+        },
+        err => {
+          console.log(err.message);
+        }
+      );
+    }
     var i = 1;
-    this.center.lat = this.getGeoLocation.lat;
-    this.center.lng = this.getGeoLocation.lon;
     this.$socket.emit("setLocation", this.center);
     this.$socket.on("setLocation", data => {
       this.mask = data.data.stores;
@@ -55,6 +67,7 @@ export default {
   },
   data() {
     return {
+      UserlocPosition: { lat: 33.450701, lng: 126.570667 },
       mask: "",
       appKey: "key",
       center: { lat: 33.450701, lng: 126.570667 }, // 지도의 중심 좌표
@@ -108,12 +121,32 @@ export default {
     createMarker() {
       this.$socket.emit("setLocation", this.center);
       this.clearMarker();
-      console.log(marker.length);
       this.drawMarker();
-      console.log(marker.length);
+    },
+    myLocation() {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            console.log(pos.coords);
+            this.center.lat = pos.coords.latitude;
+            this.center.lng = pos.coords.longitude;
+          },
+          err => {
+            console.log(err.message);
+          }
+        );
+      }
     }
   }
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+#myLocation {
+  position: absolute;
+  font-weight: bold;
+  margin: 20px;
+  float: left;
+  z-index: 100;
+}
+</style>
