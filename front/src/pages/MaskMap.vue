@@ -7,7 +7,7 @@
         <md-card>
           <md-card-header data-background-color="green">
             <h4 class="title">국내 마스크 현황 지도</h4>
-            <p class="category">전국 약국 공공마스크 실시간 현황</p>
+            <p class="category">전국 약국 공공마스크 실시간 현황 # 5~10분 간격으로 차이가 있을 수 있음. #</p>
           </md-card-header>
           <md-card-content>
             <span id="myLocation" @click="myLocation"
@@ -69,7 +69,7 @@ export default {
     return {
       UserlocPosition: { lat: 33.450701, lng: 126.570667 },
       mask: "",
-      appKey: "key",
+      appKey: "4fae7f7dcd3908c9c2ae1f82fd3648cf",
       center: { lat: 33.450701, lng: 126.570667 }, // 지도의 중심 좌표
       level: 3, // 지도의 레벨(확대, 축소 정도),
       mapTypeId: VueDaumMap.MapTypeId.NORMAL, // 맵 타입
@@ -93,6 +93,10 @@ export default {
       for (var i = 0; i < this.mask.length; i++) {
         if (this.mask[i].remain_stat == "empty") {
           imageURL = require("../assets/img/mask0.png");
+        } else if (this.mask[i].remain_stat == null) {
+          imageURL = require("../assets/img/mask0.png");
+        } else if (this.mask[i].remain_stat == "break") {
+          imageURL = require("../assets/img/mask0.png");
         } else if (this.mask[i].remain_stat == "few") {
           imageURL = require("../assets/img/mask1.png");
         } else if (this.mask[i].remain_stat == "some") {
@@ -105,7 +109,7 @@ export default {
           new kakao.maps.Size(31, 35),
           {
             offset: new kakao.maps.Point(16, 34),
-            alt: "마커 이미지 예제",
+            alt: "마커",
             shape: "poly",
             coords: "1,20,1,9,5,2,10,0,21,0,27,3,30,9,30,20,17,33,14,33"
           }
