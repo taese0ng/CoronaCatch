@@ -69,7 +69,7 @@ export default {
     return {
       UserlocPosition: { lat: 33.450701, lng: 126.570667 },
       mask: "",
-      appKey: "4fae7f7dcd3908c9c2ae1f82fd3648cf",
+      appKey: "key",
       center: { lat: 33.450701, lng: 126.570667 }, // 지도의 중심 좌표
       level: 3, // 지도의 레벨(확대, 축소 정도),
       mapTypeId: VueDaumMap.MapTypeId.NORMAL, // 맵 타입
