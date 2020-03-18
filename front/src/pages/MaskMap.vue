@@ -25,7 +25,7 @@
                 1개<br />
                 <img class="maskImg" src="../assets/img/mask1.png" /> 2 ~
                 30개<br />
-                <img class="maskImg" src="../assets/img/mask2.png" /> 30 or
+                <img class="maskImg" src="../assets/img/mask2.png" /> 30 ~
                 100개<br />
                 <img class="maskImg" src="../assets/img/mask3.png" /> 100개
                 이상<br />
