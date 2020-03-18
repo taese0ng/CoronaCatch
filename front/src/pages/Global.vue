@@ -7,7 +7,7 @@
         <md-card>
           <md-card-header data-background-color="green">
             <h4 class="title">국가별 코로나 현황</h4>
-            <p class="category">글로벌 코로나 확진자 순위</p>
+            <p class="category">글로벌 코로나 확진자 추이</p>
           </md-card-header>
           <md-card-content>
             <md-table v-model="this.getForeignData" table-header-color="green">

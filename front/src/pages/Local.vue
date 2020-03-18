@@ -6,8 +6,8 @@
       >
         <md-card>
           <md-card-header data-background-color="green">
-            <h4 class="title">국가별 코로나 현황</h4>
-            <p class="category">글로벌 코로나 확진자 순위</p>
+            <h4 class="title">지역별 코로나 현황</h4>
+            <p class="category">지역별 코로나 확진자 추이</p>
             <p class="category">{{ this.getLocalData.time }} 기준</p>
           </md-card-header>
           <md-card-content>

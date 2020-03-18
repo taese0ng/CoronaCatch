@@ -7,12 +7,30 @@
         <md-card>
           <md-card-header data-background-color="green">
             <h4 class="title">국내 마스크 현황 지도</h4>
-            <p class="category">전국 약국 공공마스크 실시간 현황 # 5~10분 간격으로 차이가 있을 수 있음. #</p>
+            <p class="category">
+              전국 약국 공공마스크 실시간 현황 # 5~10분 간격으로 차이가 있을 수
+              있음. #
+            </p>
           </md-card-header>
           <md-card-content>
             <span id="myLocation" @click="myLocation"
               ><md-icon>my_location</md-icon>현재위치로 가기</span
             >
+            <div id="markerInfo">
+              <p style="text-align: right">
+                <span @click="fold" style="cursor: pointer">{{ foldMsg }}</span>
+              </p>
+              <span v-if="foldInfo">
+                <img class="maskImg" src="../assets/img/mask0.png" /> 0 or
+                1개<br />
+                <img class="maskImg" src="../assets/img/mask1.png" /> 2 ~
+                30개<br />
+                <img class="maskImg" src="../assets/img/mask2.png" /> 30 or
+                100개<br />
+                <img class="maskImg" src="../assets/img/mask3.png" /> 1000개
+                이상<br />
+              </span>
+            </div>
             <vue-daum-map
               :appKey="appKey"
               :center.sync="center"
@@ -21,7 +39,7 @@
               :libraries="libraries"
               @load="onLoad"
               @dragend="createMarker"
-              style="width:100%;height:500px;"
+              style="width:100%;height:550px;"
             />
           </md-card-content>
         </md-card>
@@ -48,6 +66,7 @@ export default {
           this.UserlocPosition.lat = pos.coords.latitude;
           this.center.lng = pos.coords.longitude;
           this.UserlocPosition.lng = pos.coords.longitude;
+          this.$socket.emit("setLocation", this.center);
         },
         err => {
           console.log(err.message);
@@ -67,6 +86,8 @@ export default {
   },
   data() {
     return {
+      foldMsg: "접기",
+      foldInfo: true,
       UserlocPosition: { lat: 33.450701, lng: 126.570667 },
       mask: "",
       appKey: "key",
@@ -140,6 +161,14 @@ export default {
           }
         );
       }
+    },
+    fold() {
+      if (this.foldInfo == true) {
+        this.foldMsg = "펼치기";
+      } else {
+        this.foldMsg = "접기";
+      }
+      this.foldInfo = !this.foldInfo;
     }
   }
 };
@@ -148,9 +177,21 @@ export default {
 <style scoped>
 #myLocation {
   position: absolute;
+  cursor: pointer;
   font-weight: bold;
   margin: 20px;
   float: left;
   z-index: 100;
+}
+#markerInfo {
+  background-color: rgba(221, 221, 221, 0.548);
+  position: absolute;
+  font-weight: bold;
+  right: 20px;
+  z-index: 100;
+  padding: 10px;
+}
+.maskImg {
+  width: 45px;
 }
 </style>
