@@ -134,7 +134,7 @@ export const store = new Vuex.Store({
       }
       data.push({
         id: i,
-        country: "합계",
+        country: "??",
         confirm: foreign[0].confirm,
         die: foreign[0].die
       });
@@ -224,6 +224,8 @@ export const store = new Vuex.Store({
       }
       state.localCoronaChart.options.high =
         Math.max.apply(null, state.localCoronaChart.data.series[0]) + num;
+      state.localCoronaChart.options.low =
+        state.localCoronaChart.data.series[0][0];
       high = Math.max.apply(null, maxNum);
       num = 1;
       while (high / 10 > 1) {
@@ -234,13 +236,13 @@ export const store = new Vuex.Store({
     },
     setForeignData(state, data) {
       var foreign = data;
-      var korea = { country: "한국", confirm: 0, die: 0 };
+      var korea = { country: "??", confirm: 0, die: 0 };
       korea.confirm = String(state.corona_data[0].data);
       korea.die = String(state.corona_data[3].data);
       foreign.push(korea);
 
       var sortingField = "die";
-      foreign.sort(function(a, b) {
+      foreign.sort(function (a, b) {
         return b[sortingField] - a[sortingField];
       });
 
@@ -258,7 +260,7 @@ export const store = new Vuex.Store({
       }
 
       sortingField = "confirm";
-      foreign.sort(function(a, b) {
+      foreign.sort(function (a, b) {
         return b[sortingField] - a[sortingField];
       });
       state.foreignData = foreign;
@@ -279,7 +281,7 @@ export const store = new Vuex.Store({
     setLocalData(state, data) {
       var local = data.data;
       var sortingField = "confirm";
-      local.sort(function(a, b) {
+      local.sort(function (a, b) {
         return b[sortingField] - a[sortingField];
       });
       state.localData.time = data.time;
