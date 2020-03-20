@@ -134,7 +134,7 @@ export const store = new Vuex.Store({
       }
       data.push({
         id: i,
-        country: "??",
+        country: "합계",
         confirm: foreign[0].confirm,
         die: foreign[0].die
       });
@@ -217,17 +217,15 @@ export const store = new Vuex.Store({
       maxNum.push(Math.max.apply(null, state.localCoronaChart.data2.series[0]));
       maxNum.push(Math.max.apply(null, state.localCoronaChart.data2.series[1]));
       var high = Math.max.apply(null, state.localCoronaChart.data.series[0]);
-      var num = 1;
-      while (high / 10 > 1) {
-        num = num * 10;
-        high = high / 10;
-      }
-      state.localCoronaChart.options.high =
-        Math.max.apply(null, state.localCoronaChart.data.series[0]) + num;
+
+      state.localCoronaChart.options.high = Math.max.apply(
+        null,
+        state.localCoronaChart.data.series[0]
+      );
       state.localCoronaChart.options.low =
         state.localCoronaChart.data.series[0][0];
       high = Math.max.apply(null, maxNum);
-      num = 1;
+      var num = 1;
       while (high / 10 > 1) {
         num = num * 10;
         high = high / 10;
@@ -236,7 +234,7 @@ export const store = new Vuex.Store({
     },
     setForeignData(state, data) {
       var foreign = data;
-      var korea = { country: "??", confirm: 0, die: 0 };
+      var korea = { country: "한국­", confirm: 0, die: 0 };
       korea.confirm = String(state.corona_data[0].data);
       korea.die = String(state.corona_data[3].data);
       foreign.push(korea);
@@ -250,12 +248,12 @@ export const store = new Vuex.Store({
         Vue.set(
           state.foreignCoronaChart.data2.labels,
           i,
-          foreign[i + 2].country
+          foreign[i + 1].country
         );
         Vue.set(
           state.foreignCoronaChart.data2.series[0],
           i,
-          foreign[i + 2].die
+          foreign[i + 1].die
         );
       }
 

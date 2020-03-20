@@ -209,7 +209,7 @@
           <template slot="content">
             <h4 class="title">글로벌 코로나 그래프</h4>
             <p class="title">
-              중국을 제외한 주요 국가별 코로나 사망자 추이
+              코로나 피해 주요 국가별 사망자 추이
             </p>
           </template>
 
