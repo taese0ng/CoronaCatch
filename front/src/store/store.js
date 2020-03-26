@@ -234,13 +234,13 @@ export const store = new Vuex.Store({
     },
     setForeignData(state, data) {
       var foreign = data;
-      var korea = { country: "한국­", confirm: 0, die: 0 };
+      var korea = { country: "한국", confirm: 0, die: 0 };
       korea.confirm = String(state.corona_data[0].data);
       korea.die = String(state.corona_data[3].data);
       foreign.push(korea);
 
       var sortingField = "die";
-      foreign.sort(function (a, b) {
+      foreign.sort(function(a, b) {
         return b[sortingField] - a[sortingField];
       });
 
@@ -258,7 +258,7 @@ export const store = new Vuex.Store({
       }
 
       sortingField = "confirm";
-      foreign.sort(function (a, b) {
+      foreign.sort(function(a, b) {
         return b[sortingField] - a[sortingField];
       });
       state.foreignData = foreign;
@@ -267,19 +267,19 @@ export const store = new Vuex.Store({
         Vue.set(
           state.foreignCoronaChart.data.labels,
           i,
-          foreign[i + 2].country
+          foreign[i + 1].country
         );
         Vue.set(
           state.foreignCoronaChart.data.series[0],
           i,
-          foreign[i + 2].confirm
+          foreign[i + 1].confirm
         );
       }
     },
     setLocalData(state, data) {
       var local = data.data;
       var sortingField = "confirm";
-      local.sort(function (a, b) {
+      local.sort(function(a, b) {
         return b[sortingField] - a[sortingField];
       });
       state.localData.time = data.time;

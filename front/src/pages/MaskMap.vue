@@ -13,7 +13,7 @@
             </p>
           </md-card-header>
           <md-card-content>
-            <span id="myLocation" @click="myLocation"
+            <span id="myLocation" @click="centerLocation"
               ><md-icon>my_location</md-icon>현재위치로 가기</span
             >
             <div id="markerInfo">
@@ -38,7 +38,7 @@
               :mapTypeId="mapTypeId"
               :libraries="libraries"
               @load="onLoad"
-              @dragend="createMarker"
+              @tilesloaded="createMarker"
               style="width:100%;height:550px;"
             />
           </md-card-content>
@@ -52,10 +52,16 @@
 import VueDaumMap from "vue-daum-map";
 
 var marker = [];
-var mk, icon;
+var mk,
+  icon,
+  myMarker = null;
+var my_location = { lat: 0, lng: 0 };
 export default {
   components: {
     VueDaumMap
+  },
+  beforeDestroy() {
+    clearInterval(this.playInterval);
   },
   created() {
     if ("geolocation" in navigator) {
@@ -66,6 +72,8 @@ export default {
           this.UserlocPosition.lat = pos.coords.latitude;
           this.center.lng = pos.coords.longitude;
           this.UserlocPosition.lng = pos.coords.longitude;
+          my_location.lat = pos.coords.latitude;
+          my_location.lng = pos.coords.longitude;
           this.$socket.emit("setLocation", this.center);
         },
         err => {
@@ -86,6 +94,7 @@ export default {
   },
   data() {
     return {
+      playInterval: null,
       foldMsg: "접기",
       foldInfo: true,
       UserlocPosition: { lat: 33.450701, lng: 126.570667 },
@@ -102,11 +111,16 @@ export default {
     // 지도가 로드 완료되면 load 이벤트 발생
     onLoad(map) {
       this.map = map;
+      this.myLocation();
       this.map.setMinLevel(2);
       this.map.setMaxLevel(5);
       this.createMarker();
+      this.playLocation();
     },
     clearMarker() {
+      for (var i = 0; i < marker.length; i++) {
+        marker[i].setMap(null);
+      }
       marker.length = 0;
     },
     drawMarker() {
@@ -129,7 +143,6 @@ export default {
           imageURL,
           new kakao.maps.Size(31, 35),
           {
-            offset: new kakao.maps.Point(16, 34),
             alt: "마커",
             shape: "poly",
             coords: "1,20,1,9,5,2,10,0,21,0,27,3,30,9,30,20,17,33,14,33"
@@ -148,19 +161,43 @@ export default {
       this.clearMarker();
       this.drawMarker();
     },
+    centerLocation() {
+      this.center.lat = my_location.lat;
+      this.center.lng = my_location.lng;
+    },
     myLocation() {
       if ("geolocation" in navigator) {
         navigator.geolocation.getCurrentPosition(
           pos => {
-            console.log(pos.coords);
-            this.center.lat = pos.coords.latitude;
-            this.center.lng = pos.coords.longitude;
+            //console.log(pos.coords);
+            my_location.lat = pos.coords.latitude;
+            my_location.lng = pos.coords.longitude;
           },
           err => {
             console.log(err.message);
           }
         );
       }
+    },
+    playLocation() {
+      this.playInterval = setInterval(() => {
+        this.myLocation();
+        if (myMarker != null) myMarker.setMap(null);
+        icon = new kakao.maps.MarkerImage(
+          require("../assets/img/myMarker.png"),
+          new kakao.maps.Size(20, 20),
+          {
+            alt: "마커",
+            shape: "poly",
+            coords: "1,20,1,9,5,2,10,0,21,0,27,3,30,9,30,20,17,33,14,33"
+          }
+        );
+        myMarker = new kakao.maps.Marker({
+          map: this.map,
+          image: icon,
+          position: new kakao.maps.LatLng(my_location.lat, my_location.lng)
+        });
+      }, 1000);
     },
     fold() {
       if (this.foldInfo == true) {
