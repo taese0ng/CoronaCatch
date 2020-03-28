@@ -162,8 +162,18 @@ export default {
       this.drawMarker();
     },
     centerLocation() {
-      this.center.lat = my_location.lat;
-      this.center.lng = my_location.lng;
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          pos => {
+            //console.log(pos.coords);
+            this.center.lat = pos.coords.latitude;
+            this.center.lng = pos.coords.longitude;
+          },
+          err => {
+            console.log(err.message);
+          }
+        );
+      }
     },
     myLocation() {
       if ("geolocation" in navigator) {
