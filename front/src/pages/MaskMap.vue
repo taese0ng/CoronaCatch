@@ -174,6 +174,7 @@ export default {
           }
         );
       }
+      this.createMarker();
     },
     myLocation() {
       if ("geolocation" in navigator) {
