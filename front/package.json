@@ -13,7 +13,7 @@
     "axios": "^0.19.2",
     "chartist": "0.11.4",
     "core-js": "3.4.3",
-    "d3": "^5.15.0",
+    "d3": "^7.6.1",
     "eslint-loader": "^3.0.3",
     "google-maps": "3.3.0",
     "socket.io-client": "^2.3.0",
